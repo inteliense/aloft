@@ -209,8 +209,10 @@ public class CompiledObjectsRegister {
         for(String key : routeGroups.keySet()) {
             CompiledObjectsRegister register = routeGroups.get(key);
             ArrayList<Object> list = register.getObjects();
-            for(Object o : list)
-                routes.addAll(((RouteGroupAloftObject) o).getRoutes(this));
+            System.out.println(list.size());
+            for(Object o : list) {
+                routes.addAll(((RouteGroupAloftObject) o).getRoutes());
+            }
         }
         return new RouteCache(routes);
     }

@@ -12,7 +12,6 @@ import org.extendedweb.aloft.utils.encryption.AES;
 import org.extendedweb.aloft.utils.encryption.Rand;
 import org.extendedweb.aloft.utils.encryption.SHA;
 import org.json.simple.JSONObject;
-import org.mindrot.BCrypt;
 
 import java.util.Arrays;
 
@@ -55,7 +54,7 @@ public class ApplicationInfoResponse extends DefinedResponse {
         System.out.println(clientKey);
         System.out.println(Hex.getHex(AES.ecb(Hex.fromHex(clientKey), Hex.fromHex(clientRandom), true, false)));
 
-        String appVersion = BCrypt.hashpw(rawClientKey, BCrypt.gensalt());
+        String appVersion = ""; // BCrypt.hashpw(rawClientKey, BCrypt.gensalt());
 
         System.out.println("\n\n" + rawClientKey + "\n");
         return new String[]{appKey, clientKey, appVersion};

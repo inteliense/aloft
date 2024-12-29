@@ -26,6 +26,7 @@ import org.extendedweb.aloft.lib.http.supporting.*;
 import org.extendedweb.aloft.utils.global.__;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Paths;
 import java.sql.SQLOutput;
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ import java.util.HashMap;
 public class AloftPage extends Endpoint implements BuildsJava, AssertsLanguage, BuildsHtml {
 
     private String favicon = null;
-    private String title = "Home";
+    private String title = null;
     private ArrayList<Meta> meta = new ArrayList<>();
     private MountableComponent root = null;
     private AloftStyleCss css = new AloftStyleCss();
@@ -126,7 +127,7 @@ public class AloftPage extends Endpoint implements BuildsJava, AssertsLanguage, 
             textElement.addStyle("font-size", "256px");
             textElement.addStyle("text-shadow", "-0.04em 0.04em 0px " + theme.color("azure", Colors.Shade.DARK).getHex() + ", calc(-0.04em - 0.025em) calc(0.04em + 0.025em) 0px " + theme.color("azure", Colors.Shade.LIGHT).getHex());
             centered.addChild(textElement);
-            ButtonAloftElement btn = new ButtonAloftElement("__button_default__");
+            ButtonAloftElement btn = new ButtonAloftElement();
             btn.setText("GO HOME");
             btn.addSubclass("primary");
             btn.addSubclass("sm");
@@ -160,14 +161,14 @@ public class AloftPage extends Endpoint implements BuildsJava, AssertsLanguage, 
     public String getTitle() {
         return title;
     }
-
+//
     @Override
     public HtmlElement html(AloftTheme theme, ElementMapper mapper) {
         if(!__.isset(theme)) theme = this.theme;
         return create(theme, mapper);
     }
-
-    //UNUSED OVERRIDE
+//
+//    //UNUSED OVERRIDE
     @Override
     public HtmlElement html(AloftTheme theme, ElementMapper mapper, HashMap<String, Object> properties) {
         return html(theme, mapper);
@@ -179,9 +180,9 @@ public class AloftPage extends Endpoint implements BuildsJava, AssertsLanguage, 
     }
 
     private HtmlElement getRoot(AloftTheme theme, ElementMapper mapper) {
-        HtmlElement root = this.root.html(theme, mapper).map(mapper);
+        HtmlElement root = this.root.html(theme, mapper);
+        System.out.println(root.getHtml());
         System.out.println("JGHDLHSDF:GKOJHSFKGJHDFSGKLHJ");
-//        this.root.javascript(this.js);
         this.root.appendCss(this.css);
         System.out.println("JGHDLHSDF:GKOJHSFKGJHDFSGKLfadsfasdfasdfHJ");
         return root;
@@ -190,12 +191,17 @@ public class AloftPage extends Endpoint implements BuildsJava, AssertsLanguage, 
     private Page buildPage(AloftTheme theme, ElementMapper mapper) {
         Page page = new Page();
         System.out.println("PRE BUILD BODY");
-        Body body = buildBody(theme, mapper);
-        System.out.println("BUILD BODY");
-        page.addChild(buildHead());
-        page.addChild(body);
-        System.out.println("NO BODY");
-        System.out.println(page.getHtml());
+        try {
+            Body body = buildBody(theme, mapper);
+            System.out.println("BUILD BODY");
+            page.addChild(buildHead());
+            page.addChild(body);
+            System.out.println("NO BODY");
+            System.out.println(page.getHtml());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return page;
     }
 
@@ -209,8 +215,7 @@ public class AloftPage extends Endpoint implements BuildsJava, AssertsLanguage, 
 
     private Head buildHead() {
         Head head = new Head();
-        head.addCharset("ISO-8859-1");
-        head.addTitle(title);
+        head.addTitle("Hello");
 //        try { head.addFavicon(Paths.get(this.getClass().getResource("/images/aloft-favicon.png").toURI()).toString()); } catch (Exception e) { e.printStackTrace(); }
         System.out.println("buldHead staticFiles START");
         head.addStatic(this.staticFiles);

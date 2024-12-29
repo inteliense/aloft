@@ -1,6 +1,5 @@
 source ./MyRoutes.aloft
 
 ::project MyProject {
-    entryPoint: routes::home
     name: "MyProject"
 }

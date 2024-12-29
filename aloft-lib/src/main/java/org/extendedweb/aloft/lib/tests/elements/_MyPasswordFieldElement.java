@@ -16,7 +16,7 @@ public class _MyPasswordFieldElement extends _AloftElement {
     @Override
     public AloftElement build(HashMap<String, Object> vars) {
         this.data = vars;
-        InputAloftElement input = new InputAloftElement("__password_input__");
+        InputAloftElement input = new InputAloftElement();
         valueUid = input.getId();
         input.setLabel("Password");
         input.setPlaceholder("Enter your password...");

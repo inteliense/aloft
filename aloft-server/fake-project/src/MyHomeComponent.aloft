@@ -3,6 +3,6 @@ component MyHomeComponent {
     *text string
 
     mount: Centered(
-        child: Text(text: "Hello World!")
+        child: Text(text: this.text)
     )
 }

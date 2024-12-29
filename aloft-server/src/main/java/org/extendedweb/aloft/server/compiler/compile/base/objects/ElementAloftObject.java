@@ -37,7 +37,7 @@ public class ElementAloftObject extends AloftObject {
 
     @Override
     public void properties(ArrayList<AloftObjectProperty> properties) {
-        properties.add(new AloftObjectProperty("mounted", new BuiltComponentContainerT(), true));
+        properties.add(new AloftObjectProperty("mounted", new BuiltComponentContainerT(), register, true));
     }
 
     @Override

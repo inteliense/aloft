@@ -32,7 +32,7 @@ public class AloftFunctionContainer {
         this.args = args;
         this.body = body;
         for(String arg : args) {
-            variables.put(arg, new AloftVariable(AloftAccess.AloftAccessType.FUNCTION_ARG, arg, T.dynamic(), V.unset()));
+            variables.put(arg, new AloftVariable(AloftAccess.AloftAccessType.FUNCTION_ARG, arg, T.dynamic(), V.unset(), false, name));
         }
         this.divider = (type == AloftFunctionType.UPDATE) ? new AloftFunctionDivider(true, body, variables, register, aloftObject) : new AloftFunctionDivider(body, variables, register, aloftObject);
     }

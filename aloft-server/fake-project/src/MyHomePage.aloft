@@ -2,5 +2,5 @@ source ./MyHomeComponent.aloft
 
 ::page MyHomePage {
     title: "Home"
-    mount: MyHomeComponent
+    mount: MyHomeComponent(text: "Hello World")
 }

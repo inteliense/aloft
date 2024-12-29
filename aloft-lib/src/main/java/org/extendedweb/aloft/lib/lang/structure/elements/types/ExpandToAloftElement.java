@@ -5,7 +5,6 @@ import org.extendedweb.aloft.lib.lang.base.ElementMapper;
 import org.extendedweb.aloft.lib.lang.structure.AloftTheme;
 import org.extendedweb.aloft.lib.lang.structure.components.AloftObjectProperties;
 import org.extendedweb.aloft.lib.lang.structure.elements.base.AloftElement;
-import org.extendedweb.aloft.lib.lang.structure.elements.base.AloftElementSubtype;
 import org.extendedweb.aloft.lib.lang.types.base.T;
 
 import java.util.ArrayList;
@@ -59,11 +58,6 @@ public class ExpandToAloftElement extends AloftElement {
     }
 
     @Override
-    protected boolean hasMultipleSubtypes() {
-        return false;
-    }
-
-    @Override
     protected boolean acceptsChild() {
         return false;
     }
@@ -80,8 +74,5 @@ public class ExpandToAloftElement extends AloftElement {
         props.put("width", T.instance("width", T.string()));
         return props;
     }
-    @Override
-    protected void subtypes(ArrayList<AloftElementSubtype> subtypes) {
 
-    }
 }

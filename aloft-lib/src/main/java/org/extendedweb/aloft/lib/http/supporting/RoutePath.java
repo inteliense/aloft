@@ -1,5 +1,6 @@
 package org.extendedweb.aloft.lib.http.supporting;
 
+import org.extendedweb.aloft.lib.lang.types.base.A;
 import org.extendedweb.aloft.utils.global.__;
 
 import java.util.ArrayList;
@@ -62,6 +63,11 @@ public class RoutePath {
     }
 
     public ArrayList<RouteSegment> getList(String path) {
+        if(path.equals("/")) {
+            ArrayList<RouteSegment> index = new ArrayList<>();
+            index.add(new RouteSegment("/", false));
+            return index;
+        }
         path = (path.charAt(0) == '/') ? path.substring(1) : path;
         String[] arr = path.split("/");
         ArrayList<RouteSegment> segments = new ArrayList<>();
@@ -75,7 +81,7 @@ public class RoutePath {
         return segments;
     }
 
-    private static class RouteSegment {
+    public static class RouteSegment {
 
         private boolean wildcard = false;
         private String value;

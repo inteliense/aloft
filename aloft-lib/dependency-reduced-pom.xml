@@ -26,12 +26,12 @@
       <artifactId>utils</artifactId>
       <version>1.0</version>
       <scope>system</scope>
-      <systemPath>${project.aloft.dir}/aloft-utils-lib/target/utils-1.0.jar</systemPath>
+      <systemPath>${project.aloft.dir}\aloft-utils-lib\target\utils-1.0.jar</systemPath>
     </dependency>
   </dependencies>
   <properties>
     <maven.compiler.target>18</maven.compiler.target>
-    <project.aloft.dir>/home/ryan/aloft</project.aloft.dir>
+    <project.aloft.dir>C:\Users\ryanfitzgerald\Development\aloft</project.aloft.dir>
     <maven.compiler.source>18</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>

@@ -8,11 +8,12 @@ import org.extendedweb.aloft.lib.lang.structure.elements.types.TextAloftElement;
 import org.extendedweb.aloft.server.compiler.compile.base.builtin.RegisterElementClasses;
 import org.extendedweb.aloft.server.compiler.compile.supporting.AloftBuiltInComponentClass;
 import org.extendedweb.aloft.server.compiler.compile.supporting.AloftComponentClass;
+import org.extendedweb.aloft.server.compiler.compile.supporting.AloftVariable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ComponentObjectRegister {
+public class  ComponentObjectRegister {
 
     private HashMap<String, AloftComponentClass> classes = new HashMap<>();
 
@@ -30,7 +31,7 @@ public class ComponentObjectRegister {
         put("Centered", new AloftBuiltInComponentClass(CenteredAloftElement.class), list, register);
     }
 
-    private void put(String name, AloftBuiltInComponentClass c, HashMap<String, AloftComponentClass> list, CompiledObjectsRegister register, String subtype) {
+    public void put(String name, AloftComponentClass c) {
         classes.put(name, c);
     }
 
@@ -46,7 +47,16 @@ public class ComponentObjectRegister {
         return classes.get(name);
     }
 
+    public ArrayList<AloftVariable> getComponentVariables(String named) {
+        return classes.get(named).getVariables().get();
+    }
+
     public AloftComponent getComponent(String named) {
+        if(classes.get(named) == null) {
+            System.out.println(classes.keySet().toString());
+            System.out.println(classes.size());
+            System.exit(1);
+        }
         return classes.get(named).getComponent();
     }
 

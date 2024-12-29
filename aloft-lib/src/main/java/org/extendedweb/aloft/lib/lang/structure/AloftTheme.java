@@ -4,7 +4,7 @@ import org.extendedweb.aloft.lib.lang.base.BuildsJava;
 import org.extendedweb.aloft.lib.lang.structure.style.AloftStyleClass;
 import org.extendedweb.aloft.lib.lang.structure.style.AloftStyleClassBuilder;
 import org.extendedweb.aloft.lib.lang.structure.style.AloftStyleHashList;
-import org.extendedweb.aloft.lib.BootstrapModule;
+import org.extendedweb.aloft.lib.DefaultModule;
 import org.extendedweb.aloft.lib.IconsModule;
 import org.extendedweb.aloft.lib.StyleModule;
 import org.extendedweb.aloft.lib.colors.Color;
@@ -24,7 +24,7 @@ public class AloftTheme implements BuildsJava {
 
     private StyleModule module;
 
-    private boolean useBootstrap = false;
+    private boolean useDefaultTheme = false;
     private boolean useDefaultIcons = false;
     private boolean useDefaultFont = false;
 
@@ -47,9 +47,9 @@ public class AloftTheme implements BuildsJava {
         return v;
     }
 
-    public void setUsesBootstrap() {
-        useBootstrap = true;
-        module = new BootstrapModule();
+    public void setUsesDefaultTheme() {
+        useDefaultTheme = true;
+        module = new DefaultModule();
     }
 
     public void setIconModule(IconsModule module) {
@@ -69,8 +69,8 @@ public class AloftTheme implements BuildsJava {
         return colors.get(key, shade);
     }
 
-    public boolean usesBootstrap() {
-        return useBootstrap;
+    public boolean usesDefaultTheme() {
+        return useDefaultTheme;
     }
 
     public void setUsesDefaultIcons() {

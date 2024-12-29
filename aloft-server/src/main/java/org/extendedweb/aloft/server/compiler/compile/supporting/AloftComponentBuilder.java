@@ -7,13 +7,15 @@ import org.extendedweb.aloft.server.compiler.compile.base.register.CompiledObjec
 import org.extendedweb.aloft.server.compiler.exceptions.CompilerException;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class AloftComponentBuilder extends V {
 
     private AloftComponentNode root;
+    private AtomicReference<ArrayList<AloftVariable>> variables;
 
-    public AloftComponentBuilder(ContextContainer container, CompiledObjectsRegister register) throws CompilerException {
-        this.root = new AloftComponentNode(container, register);
+    public AloftComponentBuilder(ContextContainer container, CompiledObjectsRegister register, AtomicReference<ArrayList<AloftVariable>> variables) throws CompilerException {
+        this.root = new AloftComponentNode(container, register, variables);
     }
 
     @Override
@@ -21,7 +23,7 @@ public class AloftComponentBuilder extends V {
         return (Any) root.component();
     }
 
-    public <Any> Any get(CompiledObjectsRegister compiledObjectsRegister, ArrayList<AloftVariable> variables) {
+    public <Any> Any get(CompiledObjectsRegister compiledObjectsRegister) {
         return (Any) root.build(compiledObjectsRegister, variables);
     }
 

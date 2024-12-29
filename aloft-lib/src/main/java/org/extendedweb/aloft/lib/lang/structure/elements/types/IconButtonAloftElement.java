@@ -1,30 +1,17 @@
 package org.extendedweb.aloft.lib.lang.structure.elements.types;
 
+import org.extendedweb.aloft.lib.colors.ColorUtils;
 import org.extendedweb.aloft.lib.html.elements.HtmlElement;
 import org.extendedweb.aloft.lib.lang.base.ElementMapper;
 import org.extendedweb.aloft.lib.lang.structure.AloftTheme;
 import org.extendedweb.aloft.lib.lang.structure.components.AloftObjectProperties;
 import org.extendedweb.aloft.lib.lang.structure.elements.base.AloftElement;
 import org.extendedweb.aloft.lib.lang.structure.elements.base.AloftIconPlacement;
-import org.extendedweb.aloft.lib.colors.ColorUtils;
 import org.extendedweb.aloft.lib.lang.types.base.T;
 
-public class ButtonAloftElement extends AloftElement {
+public class IconButtonAloftElement extends AloftElement {
 
-    @Override
-    public HtmlElement create(AloftTheme theme, ElementMapper mapper) {
-        return null;
-    }
-
-    public enum Size {
-        LG,
-        MD,
-        SM
-    }
-
-    public ButtonAloftElement() { super(); init(); }
-
-    public ButtonAloftElement(Size size) { super(); init(); }
+    public IconButtonAloftElement() { super(); init(); }
 
     public void setText(String text) { this.vars.replace("text", text); }
 
@@ -146,5 +133,10 @@ public class ButtonAloftElement extends AloftElement {
         props.put("color", T.instance("color", T.instance(T.string())));
         props.put("icon", T.instance());
         return props;
+    }
+
+    @Override
+    public HtmlElement create(AloftTheme theme, ElementMapper mapper) {
+        return null;
     }
 }

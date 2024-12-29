@@ -6,134 +6,86 @@ import org.extendedweb.aloft.utils.global.__;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class AloftObjectProperties {
 
-    private HashMap<String, ArrayList<AloftObjectProperty>> collection = new HashMap<>();
+    private HashMap<String, ArrayList<AtomicReference<AloftObjectProperty>>> collection = new HashMap<>();
 
     public AloftObjectProperties() { }
 
-    public ArrayList<AloftObjectProperty> base() {
+    public ArrayList<AtomicReference<AloftObjectProperty>> base() {
         if(!collection.containsKey("*")) return new ArrayList<>();
         return collection.get("*");
     }
 
-    public ArrayList<AloftObjectProperty> all() {
-        ArrayList<AloftObjectProperty> all = new ArrayList<>();
+    public ArrayList<AtomicReference<AloftObjectProperty>> all() {
+        ArrayList<AtomicReference<AloftObjectProperty>> all = new ArrayList<>();
         for(String key : collection.keySet()) all.addAll(collection.get(key));
         return all;
     }
 
-    public ArrayList<AloftObjectProperty> get() {
+    public ArrayList<AtomicReference<AloftObjectProperty>> get() {
         return base();
     }
 
-    public ArrayList<AloftObjectProperty> getList(String subtype) {
-        ArrayList<AloftObjectProperty> list = new ArrayList<>();
-        list.addAll(base());
-        if(!collection.containsKey(subtype)) return list;
-        list.addAll(collection.get(subtype));
-        return list;
-    }
-
-    public AloftObjectProperty get(String property) {
-        ArrayList<AloftObjectProperty> list = get();
-        for(AloftObjectProperty prop : list) {
-            if(__.same(prop.getName(), property)) return prop;
+    public AtomicReference<AloftObjectProperty> get(String property) {
+        ArrayList<AtomicReference<AloftObjectProperty>> list = get();
+        for(AtomicReference<AloftObjectProperty> prop: list) {
+            if(__.same(prop.get().getName(), property)) return prop;
         }
         return null;
     }
 
-    public AloftObjectProperty get(String subtype, String property) {
-        ArrayList<AloftObjectProperty> list = getList(subtype);
-        for(AloftObjectProperty prop : list) {
-            if(__.same(prop.getName(), property)) return prop;
-        }
-        return null;
-    }
-
-    public boolean replace(String name, Object v) {
-        boolean success = true;
+    public void replace(String name, Object v) {
         ArrayList<String> occurrences = containedIn(name);
-        for(String key : occurrences) {
-            if(!put(collection.get(key), name, v) && success) success = false;
+          for(String key : occurrences) {
+              ArrayList<AtomicReference<AloftObjectProperty>> c = collection.get(key);
+              for(AtomicReference<AloftObjectProperty> prop : c) {
+                  if(prop.get().getName().equals(name)) {
+                      AloftObjectProperty property = prop.get();
+                      property.replace(v);
+                      prop.set(property);
+                  }
+              }
         }
-        return success;
     }
 
-    public boolean replace(String name, Object v, String subtype) {
-        if(!collection.containsKey(subtype)) return false;
-        return put(collection.get(subtype), name, v);
+    public void put(String name, Object v) {
+        ArrayList<AtomicReference<AloftObjectProperty>> c = collection.get("*");
+        for(AtomicReference<AloftObjectProperty> prop : c) {
+            if(prop.get().getName().equals(name)) {
+                AloftObjectProperty p = prop.get();
+                p.replace(v);
+                prop.set(p);
+            }
+        }
     }
-
-//    public boolean replace(AloftObjectProperty prop, String getList) {
-//        if(!collection.containsKey(getList)) return false;
-//        return put(collection.get(getList), prop);
-//    }
-//
-//    public boolean replace(AloftObjectProperty prop) {
-//        if(!collection.containsKey("*")) return false;
-//        return put(collection.get("*"), prop);
-//    }
-
 
     public void put(String name, T type) {
         put(name, type, false);
     }
 
     public void put(String name, T type, boolean required) {
-        AloftObjectProperty prop = new AloftObjectProperty(name, type, required);
+        AtomicReference<AloftObjectProperty> prop = new AtomicReference<>(new AloftObjectProperty(name, type, required));
         if(!collection.containsKey("*")) collection.put("*", new ArrayList<>());
         put(collection.get("*"), prop);
     }
 
-    public void put(String name, T type, boolean required, String...subtypes) {
-        AloftObjectProperty prop = new AloftObjectProperty(name, type, required);
-        for(String subtype : subtypes) {
-            if (!collection.containsKey(subtype)) collection.put(subtype, new ArrayList<>());
-            put(collection.get(subtype), prop);
-        }
+    public void put(ArrayList<AtomicReference<AloftObjectProperty>> current, AtomicReference<AloftObjectProperty> prop) {
+        current.add(prop);
     }
 
-    public void put(String name, Object v, String... subtypes) {
-        for(String subtype : subtypes) {
-            if (!collection.containsKey(subtype)) collection.put(subtype, new ArrayList<>());
-            put(collection.get(subtype), name, v);
-        }
-    }
-
-    public void put(String name, T type, Object value) {
-        AloftObjectProperty prop = new AloftObjectProperty(name, type, value);
-        if(!collection.containsKey("*")) collection.put("*", new ArrayList<>());
-        put(collection.get("*"), prop);
-    }
-
-    public void put(String name, T type, Object value, String... subtypes) {
-        AloftObjectProperty prop = new AloftObjectProperty(name, type, value);
-        for(String subtype : subtypes) {
-            if (!collection.containsKey(subtype)) collection.put(subtype, new ArrayList<>());
-            put(collection.get(subtype), prop);
-        }
-    }
-
-    private boolean put(ArrayList<AloftObjectProperty> current, AloftObjectProperty property) {
-        for(AloftObjectProperty prop : current) {
-            if(__.same(prop.getName(), property.getName())) {
-                return prop.replace(property.type(), property.value());
-            }
-        }
-        current.add(property);
-        return true;
-    }
-
-    private boolean put(ArrayList<AloftObjectProperty> current, String propName, Object propValue) {
-        for(AloftObjectProperty prop : current) {
-            if(__.same(prop.getName(), propName)) {
-                return prop.replace(propValue);
-            }
-        }
-        return true;
-    }
+//    private boolean put(ArrayList<AtomicReference<AloftObjectProperty>> current, AloftObjectProperty property) {
+//        for(AtomicReference<AloftObjectProperty> prop : current) {
+//            if(__.same(prop.get().getName(), property.getName())) {
+//                prop.set(property);
+//                current.add(prop);
+//                break;
+//            }
+//        }
+//        return true;
+//    }
 
     private ArrayList<String> containedIn(String name) {
         ArrayList<String> list = new ArrayList<>();
@@ -145,11 +97,18 @@ public class AloftObjectProperties {
 
     private boolean containedIn(String name, String subtype) {
         if(!collection.containsKey(subtype)) return false;
-        ArrayList<AloftObjectProperty> current = collection.get(subtype);
-        for(AloftObjectProperty prop : current) {
-            if(__.same(prop.getName(), name)) return true;
+        ArrayList<AtomicReference<AloftObjectProperty>> current = collection.get(subtype);
+        for(AtomicReference<AloftObjectProperty> prop: current) {
+            if(__.same(prop.get().getName(), name)) return true;
         }
         return false;
     }
 
+    public AloftObjectProperty get(String name, String key) {
+        ArrayList<AtomicReference<AloftObjectProperty>> c = collection.get(name);
+        for(AtomicReference<AloftObjectProperty> ref : c) {
+            if(ref.get().getName().equals(key)) return ref.get();
+        }
+        return null;
+    }
 }

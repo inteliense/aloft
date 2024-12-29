@@ -5,13 +5,17 @@ import org.extendedweb.aloft.lib.lang.types.base.T;
 import org.extendedweb.aloft.lib.lang.types.base.V;
 import org.extendedweb.aloft.lib.lang.types.t.*;
 import org.extendedweb.aloft.lib.lang.types.v.NullV;
+import org.extendedweb.aloft.server.compiler.compile.base.register.CompiledObjectsRegister;
+import org.extendedweb.aloft.server.compiler.compile.supporting.AloftVariable;
 import org.extendedweb.aloft.server.compiler.compile.supporting.BuiltComponentContainerT;
 import org.extendedweb.aloft.server.compiler.compile.supporting.ContextContainer;
 import org.extendedweb.aloft.server.compiler.exceptions.CompilerException;
 import org.extendedweb.aloft.server.grammar.antlr.AloftParser;
 import org.extendedweb.aloft.utils.global.__;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class TypeCompiler {
 
@@ -22,12 +26,21 @@ public class TypeCompiler {
         return null;
     }
 
-    public static V compile(T type, ContextContainer ctx) throws CompilerException {
+//    public static V compile(T type, ContextContainer ctx) throws CompilerException {
+//        ParserRuleContext o = ctx.context();
+//        System.out.println("type@compile=" + type.getClass());
+//        if(o instanceof AloftParser.Property_valueContext)
+//            if(type instanceof DynamicT) return property(ctx);
+//            else return property(type, ctx);
+//        return null;
+//    }
+
+    public static V compile(T type, ContextContainer ctx, CompiledObjectsRegister register, AtomicReference<ArrayList<AloftVariable>> instanceVars) throws CompilerException {
         ParserRuleContext o = ctx.context();
         System.out.println("type@compile=" + type.getClass());
         if(o instanceof AloftParser.Property_valueContext)
             if(type instanceof DynamicT) return property(ctx);
-            else return property(type, ctx);
+            else return property(type, ctx, register, instanceVars);
         return null;
     }
 
@@ -35,16 +48,25 @@ public class TypeCompiler {
         return new DynamicT().value(getValue(val));
     }
 
-    private static V property(T type, ContextContainer val) throws CompilerException {
+    private static V property(T type, ContextContainer val, CompiledObjectsRegister register, AtomicReference<ArrayList<AloftVariable>> instanceVars) throws CompilerException {
         AloftParser.Property_valueContext ctx = (AloftParser.Property_valueContext) val.context();
+
+        if(assertVariable(ctx)) {
+            String varName = ctx.any_var().getText();
+            for (AloftVariable var : instanceVars.get()) {
+                String identifier = var.getIdentifier();
+                if (var.isScoped()) varName = varName.replace("this.", "");
+                if (__.same(identifier, varName)) {
+                    if (type.getClass().getName().equals(var.getType().getClass().getName())) {
+                        return var.value();
+                    }
+                }
+            }
+        }
         if(type instanceof StringT) {
             if(!assertString(ctx)) val.e("Property value got unexpected data type, expected string.", CompilerException.ExceptionType.CRITICAL);
             String str = string(ctx);
             return type.value(str);
-        }
-        if(type instanceof NamedT) {
-            if(!assertVariable(ctx)) val.e("Property value got unexpected data type, expected variable.", CompilerException.ExceptionType.CRITICAL);
-            return type.value(ctx.any_var().getText());
         }
         if(type instanceof PathT) {
             if(!assertPath(ctx)) val.e("Property value got unexpected data type, expected path.", CompilerException.ExceptionType.CRITICAL);
@@ -61,9 +83,9 @@ public class TypeCompiler {
             Object[] arr = array(ctx);
             return type.value(arr);
         }
-        if(type instanceof AloftComponentT) {
+        if(type instanceof BuiltComponentContainerT) {
             if(!assertComponent(ctx)) val.e("Property value got unexpected data type, expected component.", CompilerException.ExceptionType.CRITICAL);
-            return new BuiltComponentContainerT().value(new ContextContainer(((AloftParser.Property_valueContext) val.context()).component_tree(), val.getFile()));
+            return ((BuiltComponentContainerT) type).value(new ContextContainer(((AloftParser.Property_valueContext) val.context()).component_tree(), val.getFile()), register, instanceVars);
         }
         return new NullV();
     }

@@ -39,7 +39,7 @@ public class ComponentAloftObject extends AloftObject {
 
     @Override
     public void properties(ArrayList<AloftObjectProperty> properties) {
-        properties.add(new AloftObjectProperty("mount", new BuiltComponentContainerT(), true));
+        properties.add(new AloftObjectProperty("mount", new BuiltComponentContainerT(), register, true));
     }
 
     @Override
@@ -79,26 +79,23 @@ public class ComponentAloftObject extends AloftObject {
                 valueCtx.e("Invalid component tree.", CompilerException.ExceptionType.FATAL);
                 continue;
             }
-            AloftComponentBuilder builder = (AloftComponentBuilder) new BuiltComponentContainerT().value(new ContextContainer(componentCtx, file), register, getPublicVariables());
-            this.mount = new AloftComponentClass(builder, register, getPublicVariables());
+            AloftComponentBuilder builder = (AloftComponentBuilder) new BuiltComponentContainerT().value(new ContextContainer(componentCtx, file), register, variables);
+            this.mount = new AloftComponentClass(builder, register, variables);
         }
-        System.out.println("DONE");
     }
 
-    public ArrayList<AloftVariable> getPublicVariables() {
-        return getPublicVariables(false);
-    }
-
-    public ArrayList<AloftVariable> getPublicVariables(boolean includeStatic) {
-        ArrayList<AloftVariable> publicVars = new ArrayList<>();
-        for(AloftVariable variable : variables) {
-            if(includeStatic && variable.getAccess() == AloftAccess.AloftAccessType.PUBLIC_STATIC) publicVars.add(variable);
-            if(variable.getAccess() == AloftAccess.AloftAccessType.PUBLIC ||
-                    variable.getAccess() == AloftAccess.AloftAccessType.PUBLIC_REQUIRED) {
-                publicVars.add(variable);
-            }
+    @Override
+    public void parseVariables(List<AloftParser.SyntaxContext> syntax, CompiledObjectsRegister register) {
+        for(AloftParser.SyntaxContext ctx : syntax) {
+            AloftParser.Declare_variableContext compCtx = ctx.declare_variable();
+            AloftParser.Declare_variableContext declareCtx = ctx.declare_variable();
+            if(!__.isset(declareCtx)) continue;
+            System.out.println("declare=" + declareCtx.getText());
+            ArrayList<AloftVariable> vars = AloftVariable.fromContext(declareCtx, getName());
+            ArrayList<AloftVariable> __v = variables.get() == null ? new ArrayList<>() : variables.get();
+            __v.addAll(vars);
+            variables.set(__v);
         }
-        return publicVars;
     }
 
     @Override

@@ -16,7 +16,7 @@ public class _MyTextFieldElement extends _AloftElement implements AloftElementIm
     @Override
     public AloftElement build(HashMap<String, Object> vars) {
         this.data = vars;
-        InputAloftElement input = new InputAloftElement("__text_input__");
+        InputAloftElement input = new InputAloftElement();
         input.setLabel("Email");
         input.setPlaceholder("Enter your email...");
         input.setHelpText("Please enter a valid email.");

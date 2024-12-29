@@ -8,6 +8,7 @@ import org.extendedweb.aloft.server.compiler.compile.base.register.CompiledObjec
 import org.extendedweb.aloft.server.compiler.exceptions.CompilerException;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class BuiltComponentContainerT extends AloftComponentT {
 
@@ -16,9 +17,9 @@ public class BuiltComponentContainerT extends AloftComponentT {
         return V.nothing();
     }
 
-    public V value(ContextContainer ctx, CompiledObjectsRegister register, ArrayList<AloftVariable> vars) {
+    public V value(ContextContainer ctx, CompiledObjectsRegister register, AtomicReference<ArrayList<AloftVariable>> variables) {
         try {
-            return new AloftComponentBuilder(ctx, register);
+            return new AloftComponentBuilder(ctx, register, variables);
         } catch (CompilerException e) {
             e.handle();
             return null;

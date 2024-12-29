@@ -26,10 +26,27 @@ public abstract class MountableComponent extends AloftComponent {
     public MountableComponent(AloftComponent base) {
         super();
         try {
+            System.exit(252);
             components.add(base);
+            System.out.println(base.html(null, null));
+            System.exit(253);
+            addChild(base);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public HtmlElement create(AloftTheme theme, ElementMapper mapper) {
+        HtmlElement root = null;
+        for(AloftComponent component : children) {
+            if(root == null) root = component.html(theme, mapper);
+            else {
+                root.addChild(component.html(theme, mapper));
+                root = html(theme, mapper);
+            }
+        }
+        return root;
     }
 
     @Override
@@ -38,17 +55,6 @@ public abstract class MountableComponent extends AloftComponent {
     }
 
     protected abstract ArrayList<AloftComponent> build() throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException;
-
-    @Override
-    public HtmlElement html(AloftTheme theme, ElementMapper mapper) {
-        System.out.println("children.size = " + this.children.size());
-        System.out.println("components.size = " + this.components.size());
-        this.children.clear();
-//        //TODO apply dynamic slots
-        this.children.addAll(this.components);
-        System.out.println("children.size = " + this.children.size());
-        return super.html(theme, mapper);
-    }
 
     public void appendComponent(AloftComponent component) {
         this.components.add(component);

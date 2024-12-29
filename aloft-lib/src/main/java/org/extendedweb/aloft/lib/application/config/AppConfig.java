@@ -1,5 +1,6 @@
 package org.extendedweb.aloft.lib.application.config;
 
+import org.extendedweb.aloft.lib.BootstrapIcons;
 import org.extendedweb.aloft.lib.application.cache.AppCache;
 import org.extendedweb.aloft.lib.application.cache.RouteCache;
 import org.extendedweb.aloft.lib.client.SessionManager;
@@ -85,7 +86,7 @@ public class AppConfig {
         list.appendAppMiddleware(m);
         this.middleware = list;
         theme = new AloftTheme();
-        theme.setUsesBootstrap();
+        theme.setUsesDefaultTheme();
         theme.setColors(new Colors("#e03d3d", "#269447", "#3d7be0", "#f23737", "#727a8a"));
         theme.setUsesDefaultIcons();
         theme.setUsesDefaultFont();
@@ -99,7 +100,7 @@ public class AppConfig {
         MiddlewareList list = new MiddlewareList();
         this.middleware = list;
         theme = new AloftTheme();
-        theme.setUsesBootstrap();
+        theme.setUsesDefaultTheme();
         theme.setColors(new Colors("#e03d3d", "#269447", "#3d7be0", "#f23737", "#727a8a"));
         theme.setUsesDefaultIcons();
         theme.setUsesDefaultFont();
@@ -111,7 +112,7 @@ public class AppConfig {
         scriptEndpoints = new JavaScriptEndpointList();
         stylesheetEndpoints = new StylesheetEndpointList();
         fontEndpoints = new FontEndpointList();
-        if(theme.usesBootstrap() || theme.usesDefaultIcons()) {
+        if(theme.usesDefaultTheme() || theme.usesDefaultIcons()) {
             buildStaticJavaScript();
             cache.addStaticJavascript(scriptEndpoints);
             buildStaticStylesheets();
@@ -185,10 +186,10 @@ public class AppConfig {
     }
 
     private void buildStaticJavaScript() {
-        if(this.theme.usesBootstrap()) {
-            ArrayList<File> bootstrapJs = getFileList(getBootstrapJsResources());
-            for(int i=0; i< bootstrapJs.size(); i++){
-                JavaScriptBuilder builder = new JavaScriptBuilder(getBootstrapJsResources().get(i)[1], bootstrapJs.get(i));
+        if(this.theme.usesDefaultTheme()) {
+            ArrayList<File> DefaultThemeJs = getFileList(getDefaultThemeJsResources());
+            for(int i=0; i< DefaultThemeJs.size(); i++){
+                JavaScriptBuilder builder = new JavaScriptBuilder(getDefaultThemeJsResources().get(i)[1], DefaultThemeJs.get(i));
                 JavaScript js = new JavaScript(JavaScriptWriterType.FILE, builder);
                 scriptEndpoints.appendAppScriptEndpoints(js);
             }
@@ -202,9 +203,9 @@ public class AppConfig {
         }
     }
 
-    private ArrayList<String[]> getBootstrapJsResources() {
+    private ArrayList<String[]> getDefaultThemeJsResources() {
         ArrayList<String[]> resources = new ArrayList<>();
-        resources.add(new String[]{"/bootstrap/bootstrap.bundle.js", this.routes.javascript() + "/bootstrap.js"});
+        resources.add(new String[]{"/default-ui/full.min.js", this.routes.javascript() + "/default.js"});
         return resources;
     }
 
@@ -216,11 +217,11 @@ public class AppConfig {
 
     private void buildStaticStylesheets() {
         ArrayList<String[]> paths = new ArrayList<>();
-        if(this.theme.usesBootstrap()) {
-            paths.addAll(getBootstrapCssResources());
-            ArrayList<File> bootstrapCss = getFileList(getBootstrapCssResources());
-            for(int i=0; i< bootstrapCss.size(); i++){
-                StylesheetBuilder builder = new StylesheetBuilder(getBootstrapCssResources().get(i)[1], bootstrapCss.get(i));
+        if(this.theme.usesDefaultTheme()) {
+            paths.addAll(getDefaultThemeCssResources());
+            ArrayList<File> DefaultThemeCss = getFileList(getDefaultThemeCssResources());
+            for(int i=0; i< DefaultThemeCss.size(); i++){
+                StylesheetBuilder builder = new StylesheetBuilder(getDefaultThemeCssResources().get(i)[1], DefaultThemeCss.get(i));
                 Stylesheet css = new Stylesheet(StylesheetWriterType.FILE, builder);
                 stylesheetEndpoints.appendAppStylesheetEndpoints(css);
             }
@@ -272,13 +273,13 @@ public class AppConfig {
 
     private ArrayList<String[]> getIconFontResources() {
         ArrayList<String[]> resources = new ArrayList<>();
-        resources.add(new String[]{"/bootstrap/bootstrap-icons.woff", this.routes.stylesheets() + "/icons.woff"});
+        resources.add(new String[]{"/default-ui/bootstrap-icons.woff", this.routes.stylesheets() + "/icons.woff"});
         return resources;
     }
 
     private ArrayList<String[]> getIconFontCssResources() {
         ArrayList<String[]> resources = new ArrayList<>();
-        resources.add(new String[]{"/bootstrap/icons.css", this.routes.stylesheets() + "/icons.css"});
+        resources.add(new String[]{"/default-ui/icons.css", this.routes.stylesheets() + "/icons.css"});
         return resources;
     }
 
@@ -294,10 +295,9 @@ public class AppConfig {
         return resources;
     }
 
-    private ArrayList<String[]> getBootstrapCssResources() {
+    private ArrayList<String[]> getDefaultThemeCssResources() {
         ArrayList<String[]> resources = new ArrayList<>();
-        resources.add(new String[]{"/bootstrap/ayroui/ayroui.css", this.routes.stylesheets() + "/module.css"});
-        resources.add(new String[]{"/bootstrap/ayroui/bootstrap.min.css", this.routes.stylesheets() + "/bootstrap.css"});
+        resources.add(new String[]{"/default-ui/full.min.css", this.routes.stylesheets() + "/module.css"});
         return resources;
     }
 

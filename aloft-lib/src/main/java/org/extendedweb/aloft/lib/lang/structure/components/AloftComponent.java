@@ -17,9 +17,12 @@ import org.extendedweb.aloft.utils.encryption.Rand;
 import org.extendedweb.aloft.utils.encryption.SHA;
 import org.extendedweb.aloft.utils.global.__;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public abstract class AloftComponent implements BuildsHtml, BuildsAppJavascript {
 
@@ -54,14 +57,14 @@ public abstract class AloftComponent implements BuildsHtml, BuildsAppJavascript 
         resetProperties(properties);
     }
 
-    public void setVars(ArrayList<AloftObjectProperty> properties) {
-        ArrayList<AloftObjectProperty> defaultProps = this.vars.getList(this.name);
-        for (AloftObjectProperty prop : defaultProps) {
-            String defName = prop.getName();
-            for (AloftObjectProperty _prop : properties) {
-                String name = _prop.getName();
+    public void setVars(ArrayList<AtomicReference<AloftObjectProperty>> properties) {
+        ArrayList<AtomicReference<AloftObjectProperty>> defaultProps = this.vars.all();
+        for (AtomicReference<AloftObjectProperty> prop : defaultProps) {
+            String defName = prop.get().getName();
+            for (AtomicReference<AloftObjectProperty> _prop : properties) {
+                String name = _prop.get().getName();
                 if (__.same(defName, name)) {
-                    this.vars.replace(name, _prop.value());
+                    this.vars.replace(name, _prop.get().value());
                     break;
                 }
             }
@@ -75,6 +78,21 @@ public abstract class AloftComponent implements BuildsHtml, BuildsAppJavascript 
         component.setParentComponent(getName());
         this.children.add(component);
         setIds();
+    }
+
+    public String getComponentName() {
+
+        String name = getName();
+        String finalName = "";
+        Pattern p = Pattern.compile("__([a-z])([a-z]+)__");
+        Matcher m = p.matcher(name);
+        while(m.find()) {
+            finalName += m.group(1).toUpperCase();
+            finalName += m.group(2);
+        }
+
+        return finalName.replace("_", "");
+
     }
 
     public String getParentComponent() {
@@ -262,45 +280,28 @@ public abstract class AloftComponent implements BuildsHtml, BuildsAppJavascript 
 
     @Override
     public HtmlElement html(AloftTheme theme, ElementMapper mapper) {
-        HtmlElement root = create(theme, mapper);
-        if(!__.isset(root)) {
-            System.out.println("root(unset)=" + this.getName());
-            System.out.println(this.getProperties().all().size());
+        try {
+            HtmlElement root = create(theme, mapper);
+            System.out.println(getName());
+            System.out.println(root.getHtml());
+            System.exit(246);
+            for (AloftComponent component : children) {
+                root.addChild(component.html(theme, mapper));
+                System.out.println(component.html(theme, mapper).getHtml());
+                System.exit(246);
+            }
+            return root;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        root.setConditionalClasses(getConditionalClasses());
-        root.setParentComponent(parentComponent);
-        for(HtmlElement child : root.getChildren()) {
-            child.setParentComponent(getName());
-        }
-        return root;
+        System.out.println("HTML");
+        return null;
     }
 
     @Override
-    public HtmlElement html(AloftTheme theme, ElementMapper mapper, HashMap<String, Object> properties) {
+    public HtmlElement html(AloftTheme theme, ElementMapper mapper, HashMap<String, Object> properties)  {
         resetProperties(properties);
         return html(theme, mapper);
-    }
-
-    public HtmlElement create(AloftTheme theme, ElementMapper mapper) {
-        System.out.println("ChildSize=" + children.size());
-        if(this.children.size() == 1) {
-            HtmlElement element = children.get(0).html(theme, mapper);
-            return element;
-        } else if(this.children.size() > 1) {
-            HtmlElement container = new HtmlElement(this.uniqueId) {
-                @Override
-                public String getKey() {
-                    return "div";
-                }
-            };
-            for(int i=0; i< children.size(); i++) {
-                HtmlElement element = children.get(i).html(theme, mapper);
-                container.addChild(element);
-            }
-            container.addChild(listeners.get(0).getObject().getJs());
-            return container;
-        }
-        return null;
     }
 
     public void resetProperties(HashMap<String, Object> properties) {

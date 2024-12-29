@@ -22,11 +22,11 @@ public class AloftFunctionCompiler {
         AloftParser.Function_declarationContext declarationCtx = ctx.function_declaration();
         AloftFunctionType type = AloftFunctionTypeParser.parse(declarationCtx, register);
         String name = getFunctionName(declarationCtx, register, aloftObject);
-        AloftAccess.AloftAccessType access = getFunctionAccess(declarationCtx);
+        AloftAccess access = getFunctionAccess(declarationCtx);
         ArrayList<String> args = getArgs(declarationCtx);
         ArrayList<String> problematicArgs = argCheck(args, register);
         if(aloftObject.functionExists(name, isArray(declarationCtx), args)) return null;
-        return new AloftFunctionContainer(type, isArray(declarationCtx), access, name, args, ctx.function_curly_block(), register, aloftObject);
+        return new AloftFunctionContainer(type, isArray(declarationCtx), access.getType(), name, args, ctx.function_curly_block(), register, aloftObject);
     }
 
     public static AloftFunctionContainer compile(AloftObject aloftObject, AloftParser.UpdateContext ctx, CompiledObjectsRegister register) {
@@ -53,7 +53,7 @@ public class AloftFunctionCompiler {
         return nameCtx.var_name().getText();
     }
 
-    private static AloftAccess.AloftAccessType getFunctionAccess(AloftParser.Function_declarationContext ctx) {
+    private static AloftAccess getFunctionAccess(AloftParser.Function_declarationContext ctx) {
         boolean isStatic = __.isset(ctx.STATIC_ACCESS());
         AloftParser.Name_declarationContext nameCtx = ctx.name_declaration();
         boolean isPrivate = __.isset(nameCtx.private_named());

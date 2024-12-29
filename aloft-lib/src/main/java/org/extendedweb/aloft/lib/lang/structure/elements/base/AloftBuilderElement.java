@@ -22,8 +22,4 @@ public class AloftBuilderElement {
         return element;
     }
 
-    public HtmlElement create(AloftTheme theme, ElementMapper mapper) {
-        return this.element.html(theme, mapper);
-    }
-
 }

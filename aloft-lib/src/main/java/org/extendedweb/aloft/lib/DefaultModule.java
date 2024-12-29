@@ -2,9 +2,9 @@ package org.extendedweb.aloft.lib;
 
 import org.extendedweb.aloft.lib.colors.Colors;
 
-public class BootstrapModule extends StyleModule {
+public class DefaultModule extends StyleModule {
 
-    public BootstrapModule() { super(); }
+    public DefaultModule() { super(); }
 
     @Override
     protected void registerFonts() {
@@ -77,22 +77,15 @@ public class BootstrapModule extends StyleModule {
 
     @Override
     protected ModuleElement centeredAloftElement(ModuleElement element) {
-        element.addClasses("root","d-flex", "w-100", "h-100", "p-3");
+        element.addClasses("root","flex", "w-100", "h-100", "p-3");
         element.addClasses("child","mx-auto", "my-auto", "w-100");
         return element;
     }
 
-//    @Override
-//    protected ModuleElement filledAloftElement(ModuleElement element) {
-//        element.addClasses("root","d-flex", "w-100", "h-100", "p-3");
-//        element.addClasses("child","mx-auto", "my-auto", "w-100");
-//        return element;
-//    }
-
     @Override
     protected ModuleElement columnAloftElement(ModuleElement element) {
-        element.addClasses("col","d-flex", "flex-column");
-        element.addClasses("col-reverse","d-flex", "flex-column-reverse");
+        element.addClasses("col","flex", "flex-col");
+        element.addClasses("col-reverse","flex", "flex-col-reverse");
         return element;
     }
 

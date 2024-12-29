@@ -12,7 +12,7 @@
         <maven.compiler.source>18</maven.compiler.source>
         <maven.compiler.target>18</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.aloft.dir>/home/ryan/aloft</project.aloft.dir>
+        <project.aloft.dir>C:\Users\ryanfitzgerald\Development\aloft</project.aloft.dir>
     </properties>
 
     <dependencies>
@@ -71,14 +71,21 @@
             <artifactId>utils</artifactId>
             <version>1.0</version>
             <scope>system</scope>
-            <systemPath>${project.aloft.dir}/aloft-utils-lib/target/utils-1.0.jar</systemPath>
+            <systemPath>${project.aloft.dir}\aloft-utils-lib\target\utils-1.0.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.inteliense</groupId>
+            <artifactId>jflux</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>C:\Users\ryanfitzgerald\Development\jflux\target\jflux-1.0.3.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>org.extendedweb.aloft</groupId>
             <artifactId>lib</artifactId>
             <version>1.0</version>
             <scope>system</scope>
-            <systemPath>${project.aloft.dir}/aloft-lib/target/lib-1.0.jar</systemPath>
+            <systemPath>${project.aloft.dir}\aloft-lib\target\lib-1.0.jar</systemPath>
         </dependency>
     </dependencies>
 

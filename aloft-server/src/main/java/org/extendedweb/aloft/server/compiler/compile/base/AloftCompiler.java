@@ -52,6 +52,9 @@ public class AloftCompiler {
         compileFile(config.getEntryPoint());
         this.config.buildCache(compiledObjects.getRouteCache());
         System.out.println(compiledObjects.getRouteCache().getRouteList().getAllRoutes().size());
+        System.out.println("-----");
+        compiledObjects.getRouteCache().printCache();
+        System.exit(1);
         if(this.debug) {
             watcher = new FileWatcher(this.dir) {
                 @Override
@@ -90,17 +93,16 @@ public class AloftCompiler {
                 ComponentAloftObject component = ComponentAloftObject.createIf(root, compiledObjects, i, file);
                 if (isset(component)) {
                     compiledObjects.register(ComponentAloftObject.class, component, new ContextContainer(root.get(i).component().var_name(), file));
-                    System.out.println("COMPONENT");
-                    continue;
-                }
-                RouteGroupAloftObject routeGroup = RouteGroupAloftObject.createIf(root, compiledObjects, i, file);
-                if (isset(routeGroup)) {
-                    compiledObjects.register(RouteGroupAloftObject.class, routeGroup, new ContextContainer(root.get(i).routes().var_name(), file));
                     continue;
                 }
                 PageAloftObject page = PageAloftObject.createIf(root, compiledObjects, i, file);
                 if (isset(page)) {
                     compiledObjects.register(PageAloftObject.class, page, new ContextContainer(root.get(i).page().var_name(), file));
+                    continue;
+                }
+                RouteGroupAloftObject routeGroup = RouteGroupAloftObject.createIf(root, compiledObjects, i, file);
+                if (isset(routeGroup)) {
+                    compiledObjects.register(RouteGroupAloftObject.class, routeGroup, new ContextContainer(root.get(i).routes().var_name(), file));
                     continue;
                 }
 //                ModelAloftObject model = ModelAloftObject.createIf(root, compiledObjects, i, file);

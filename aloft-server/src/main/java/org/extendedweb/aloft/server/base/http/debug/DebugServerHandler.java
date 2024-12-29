@@ -30,13 +30,15 @@ public class DebugServerHandler implements HttpHandler {
     }
 
     private void app(HttpExchange t) {
-        Request req = new Request(t, config);
-        if(req.validated()) {
-            Response resp = req.handle();
-            if(resp != null) resp.send();
-        } else {
-            (new Response(t, "[500] Internal server error.", 500)).send();
-        }
+        try {
+            Request req = new Request(t, config);
+            if (req.validated()) {
+                Response resp = req.handle();
+                if (resp != null) resp.send();
+            } else {
+                (new Response(t, "[500] Internal server error.", 500)).send();
+            }
+        } catch (Exception e) { e.printStackTrace(); (new Response(t, "[500] Internal server error.", 500)).send(); }
     }
 
 }

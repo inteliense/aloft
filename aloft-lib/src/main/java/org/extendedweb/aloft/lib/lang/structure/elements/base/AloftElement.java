@@ -12,6 +12,7 @@ import org.extendedweb.aloft.lib.html.elements.HtmlElement;
 import org.extendedweb.aloft.lib.lang.types.base.V;
 import org.extendedweb.aloft.utils.global.__;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -33,9 +34,6 @@ public abstract class AloftElement extends AloftComponent {
     protected ArrayList<AloftElementExtension> extensions = new ArrayList<>();
     protected HashMap<String, String> requiredElements = new HashMap<>();
 
-    protected boolean hasMultipleSubtypes;
-    protected ArrayList<AloftElementSubtype> subtypes = new ArrayList<>();
-    protected AloftElementSubtype subtype = null;
 
     protected HashMap<String, ArrayList<String[]>> overrides = new HashMap<>();
 
@@ -43,20 +41,8 @@ public abstract class AloftElement extends AloftComponent {
         super();
     }
 
-    public AloftElement(String subtype) {
-        super();
-        setSubtype(subtype);
-    }
-
     public AloftElement(HashMap<String, Object> properties) {
         super(properties);
-        this.subtype.resetProperties(properties);
-    }
-
-    public AloftElement(HashMap<String, Object> properties, String subtype) {
-        super(properties);
-        setSubtype(subtype);
-        this.subtype.resetProperties(properties);
     }
 
     protected void init() {
@@ -68,10 +54,8 @@ public abstract class AloftElement extends AloftComponent {
     protected abstract boolean acceptsBuilder();
     protected abstract boolean requiresBuilder();
     protected abstract boolean isExtensible();
-    protected abstract boolean hasMultipleSubtypes();
     protected abstract boolean acceptsChild();
     protected abstract void setupProperties(AloftObjectProperties vars);
-    protected abstract void subtypes(ArrayList<AloftElementSubtype> subtypes);
 
     protected String id() {
         return this.uniqueId;
@@ -82,7 +66,6 @@ public abstract class AloftElement extends AloftComponent {
     }
 
     protected void applyStyle(String key, Class<?> c, HtmlElement element, AloftTheme theme) {
-        if(__.isset(subtype)) subtype.applyStyle(key, c, element, theme);
         theme.getStyleModule().get(c).fromKey(key).apply(element, this.getModuleSubclasses());
         applyStyle(element, theme);
     }
@@ -93,24 +76,6 @@ public abstract class AloftElement extends AloftComponent {
         for(int i=0; i<classes.size(); i++) element.addAttribute("class", classes.get(i).getTagClassName());
     }
 
-    private void setupSubtypes() {
-        this.hasMultipleSubtypes = hasMultipleSubtypes();
-    }
-
-    protected Object[] constructSubtype(String name) {
-        return new Object[]{
-                name,
-                acceptsIterator(),
-                acceptsBuilder(),
-                requiresBuilder(),
-                isExtensible(),
-                acceptsChild(),
-                this.vars,
-                this.moduleSubclasses,
-                this.overrides,
-                this.style
-        };
-    }
 
     public void applyOverrides() {
         try {
@@ -144,35 +109,15 @@ public abstract class AloftElement extends AloftComponent {
     @Override
     public void setClasses(ArrayList<AloftStyleClass> classes, AloftTheme theme) {
         this.classes = classes;
-        if(__.isset(subtype)) {
-            subtype.applyOverrides();
-            subtype.setClasses(classes, theme);
-            for(int i=0; i< subtype.children.size(); i++) {
-                subtype.children.get(i).applyOverrides();
-                subtype.children.get(i).setClasses(theme.mergeByHash(subtype.getStyle().getHashes()), theme);
-            }
-        } else {
             for(int i=0; i< children.size(); i++) {
                 children.get(i).applyOverrides();
                 children.get(i).setClasses(theme.mergeByHash(children.get(i).getStyle().getHashes()), theme);
             }
-        }
-    }
 
-    public void setSubtype(String subtype) {
-        if(!hasMultipleSubtypes()) return;
-        refresh();
-        subtypes(this.subtypes);
-        for(int i = 0; i< subtypes.size(); i++)
-            if(__.same(subtypes.get(i).getName(), subtype)) {
-                this.subtype = subtypes.get(i);
-                break;
-            }
     }
 
     public void addSubclass(String subclass) {
         this.moduleSubclasses.add(subclass);
-        if(__.isset(this.subtype)) this.subtype.addSubclass(subclass);
     }
 
     protected void addAll(HtmlElement element, AloftTheme theme, ElementMapper mapper) {
@@ -320,20 +265,7 @@ public abstract class AloftElement extends AloftComponent {
         return super.html(theme, mapper);
     }
 
-//    @Override
-//    public HtmlElement create(AloftTheme theme, ElementMapper mapper) {
-//        if(!__.isset(subtype)) return null;
-//        if(!listeners.isEmpty()) subtype.setListeners(listeners);
-//        String[] arr = new String[moduleSubclasses.size()];
-//        this.moduleSubclasses.toArray(arr);
-//        subtype.addSubclasses(arr);
-////        getList.applyOverrides();
-//        return subtype.html(theme, mapper);
-//    }
-
     protected void registerBuilder(AloftBuilder builder) { }
-
-    protected void registerSubtypes(ArrayList<AloftElementSubtype> subtypes) { }
 
     protected <Any> Any var(String key) {
         AloftObjectProperty property = null;

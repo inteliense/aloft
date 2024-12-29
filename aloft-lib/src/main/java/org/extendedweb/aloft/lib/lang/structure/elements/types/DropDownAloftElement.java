@@ -4,7 +4,6 @@ import org.extendedweb.aloft.lib.lang.base.ElementMapper;
 import org.extendedweb.aloft.lib.lang.structure.AloftTheme;
 import org.extendedweb.aloft.lib.lang.structure.components.AloftObjectProperties;
 import org.extendedweb.aloft.lib.lang.structure.elements.base.AloftElement;
-import org.extendedweb.aloft.lib.lang.structure.elements.base.AloftElementSubtype;
 import org.extendedweb.aloft.lib.lang.structure.style.AloftStyle;
 import org.extendedweb.aloft.lib.lang.structure.style.AloftStylePair;
 import org.extendedweb.aloft.lib.html.elements.HtmlElement;
@@ -16,11 +15,6 @@ import java.util.ArrayList;
 public class DropDownAloftElement extends AloftElement {
 
     public DropDownAloftElement() { super(); init(); }
-
-    public DropDownAloftElement(String subtype) {
-        super(subtype);
-        init();
-    }
 
     public void setPlaceholder(String placeholder) {
         this.vars.replace("placeholder", placeholder);
@@ -34,58 +28,58 @@ public class DropDownAloftElement extends AloftElement {
         this.vars.replace("help-text", helpText);
     }
 
-    @Override
-    protected void subtypes(ArrayList<AloftElementSubtype> subtypes) {
-        this.subtypes.add(new AloftElementSubtype(constructSubtype("__select_input__")) {
-            @Override
-            public HtmlElement create(AloftTheme theme, ElementMapper mapper) {
-                HtmlElement root = createElement("div");
-                HtmlElement group = createElement("div");
-                HtmlElement below = createElement("span");
-
-                if(__.isset(var("label"))) {
-                    HtmlElement label = createElement("span");
-                    Content labelTxt = new Content(var("label"));
-                    label.addChild(labelTxt);
-                    applyStyle("label", DropDownAloftElement.class, label, theme);
-                    root.addChild("label", label);
-                }
-
-                if(__.isset(var("prepend-text"))) {
-                    HtmlElement prepend = createElement("div");
-                    HtmlElement prependChild = createElement("span");
-                    Content prependText = new Content(var("prepend-text"));
-                    prependChild.addChild(prependText);
-                    applyStyle("prepend-text", DropDownAloftElement.class, prependChild, theme);
-                    prepend.addChild(prependChild);
-                    applyStyle("prepend-container", DropDownAloftElement.class, prepend, theme);
-                    group.addChild(prepend);
-                }
-
-                HtmlElement input = createElement("input");
-                applyStyle("text-input", DropDownAloftElement.class, input, theme);
-                if(__.isset(var("placeholder"))) input.addAttribute("placeholder", var("placeholder"));
-                group.addChild("input", input);
-
-                if(__.isset(var("help-text"))) {
-                    Content helpTxt = new Content(var("help-text"));
-                    below.addChild(helpTxt);
-                }
-
-                applyStyle("help-text", DropDownAloftElement.class, below, theme);
-                group.addChild("help-text", below);
-                applyStyle("text-group", DropDownAloftElement.class, group, theme);
-                root.addChild(group);
-                applyStyle("root", DropDownAloftElement.class, root, theme);
-                applyListeners("input", "input", root);
-                return root;
-            }
-            @Override
-            public String getName() {
-                return "__text_input__";
-            }
-        });
-    }
+//    @Override
+//    protected void subtypes(ArrayList<AloftElementSubtype> subtypes) {
+////        this.subtypes.add(new AloftElementSubtype(constructSubtype("__select_input__")) {
+////            @Override
+////            public HtmlElement create(AloftTheme theme, ElementMapper mapper) {
+////                HtmlElement root = createElement("div");
+////                HtmlElement group = createElement("div");
+////                HtmlElement below = createElement("span");
+////
+////                if(__.isset(var("label"))) {
+////                    HtmlElement label = createElement("span");
+////                    Content labelTxt = new Content(var("label"));
+////                    label.addChild(labelTxt);
+////                    applyStyle("label", DropDownAloftElement.class, label, theme);
+////                    root.addChild("label", label);
+////                }
+////
+////                if(__.isset(var("prepend-text"))) {
+////                    HtmlElement prepend = createElement("div");
+////                    HtmlElement prependChild = createElement("span");
+////                    Content prependText = new Content(var("prepend-text"));
+////                    prependChild.addChild(prependText);
+////                    applyStyle("prepend-text", DropDownAloftElement.class, prependChild, theme);
+////                    prepend.addChild(prependChild);
+////                    applyStyle("prepend-container", DropDownAloftElement.class, prepend, theme);
+////                    group.addChild(prepend);
+////                }
+////
+////                HtmlElement input = createElement("input");
+////                applyStyle("text-input", DropDownAloftElement.class, input, theme);
+////                if(__.isset(var("placeholder"))) input.addAttribute("placeholder", var("placeholder"));
+////                group.addChild("input", input);
+////
+////                if(__.isset(var("help-text"))) {
+////                    Content helpTxt = new Content(var("help-text"));
+////                    below.addChild(helpTxt);
+////                }
+////
+////                applyStyle("help-text", DropDownAloftElement.class, below, theme);
+////                group.addChild("help-text", below);
+////                applyStyle("text-group", DropDownAloftElement.class, group, theme);
+////                root.addChild(group);
+////                applyStyle("root", DropDownAloftElement.class, root, theme);
+////                applyListeners("input", "input", root);
+////                return root;
+////            }
+////            @Override
+////            public String getName() {
+////                return "__text_input__";
+////            }
+////        });
+//    }
 
     @Override
     protected String name() {
@@ -110,11 +104,6 @@ public class DropDownAloftElement extends AloftElement {
     @Override
     protected boolean isExtensible() {
         return false;
-    }
-
-    @Override
-    protected boolean hasMultipleSubtypes() {
-        return true;
     }
 
     @Override
@@ -168,4 +157,8 @@ public class DropDownAloftElement extends AloftElement {
         addConditionalStyle("text-input-validation","input-success", "help-text", s4);
     }
 
+    @Override
+    public HtmlElement create(AloftTheme theme, ElementMapper mapper) {
+        return null;
+    }
 }

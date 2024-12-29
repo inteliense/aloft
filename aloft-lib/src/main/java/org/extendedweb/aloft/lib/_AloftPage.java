@@ -1,10 +1,14 @@
 package org.extendedweb.aloft.lib;
 
+import org.extendedweb.aloft.lib.html.elements.HtmlElement;
+import org.extendedweb.aloft.lib.lang.base.ElementMapper;
+import org.extendedweb.aloft.lib.lang.structure.AloftTheme;
 import org.extendedweb.aloft.lib.lang.structure.components.AloftComponent;
 import org.extendedweb.aloft.lib.lang.structure.components.AloftRoot;
 import org.extendedweb.aloft.lib.lang.supporting.DynamicMountableComponent;
 import org.extendedweb.aloft.lib.lang.supporting.MountPoint;
 import org.extendedweb.aloft.lib.lang.supporting.MountableComponent;
+import org.extendedweb.aloft.utils.global.__;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -41,6 +45,7 @@ public abstract class _AloftPage implements AloftPageImpl {
     }
 
     public MountableComponent getRoot() {
+        if(!__.isset(root))  System.exit(97);
         return this.root;
     }
 
@@ -62,6 +67,7 @@ public abstract class _AloftPage implements AloftPageImpl {
     protected MountableComponent[] cx(Class<?>... comp) throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
         ArrayList<AloftComponent> c = new ArrayList<>();
         MountableComponent mc = new MountableComponent() {
+
             @Override
             protected ArrayList<AloftComponent> build() throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
                 for(int i=0; i<comp.length; i++) {
@@ -77,11 +83,12 @@ public abstract class _AloftPage implements AloftPageImpl {
     }
 
     protected MountableComponent page(Object... comp) throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
-        return new AloftRoot((mountable(comp)));
+        return (mountable(comp));
     }
 
     protected MountableComponent mountable(Object... comp) throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
         return new MountableComponent() {
+
             @Override
             protected ArrayList<AloftComponent> build() throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
                 ArrayList<AloftComponent> components = new ArrayList<>();
@@ -106,6 +113,7 @@ public abstract class _AloftPage implements AloftPageImpl {
 
     protected MountableComponent mountable(AloftComponent... comp) throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
         return new MountableComponent() {
+
             @Override
             protected ArrayList<AloftComponent> build() throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
                 ArrayList<AloftComponent> components = new ArrayList<>();
@@ -119,6 +127,11 @@ public abstract class _AloftPage implements AloftPageImpl {
 
     protected DynamicMountableComponent slot(Class<?> i, Class<?>... m) throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
         DynamicMountableComponent dmc = new DynamicMountableComponent() {
+            @Override
+            public HtmlElement create(AloftTheme theme, ElementMapper mapper) {
+                return null;
+            }
+
             @Override
             protected void mountables(HashMap<String, MountableComponent> map) throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
                 MountableComponent[] mountables = cx(m);

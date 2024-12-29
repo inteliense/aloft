@@ -2,9 +2,10 @@
 /* First ANTLR experience (no clue if it works) */
 grammar Aloft;
 r : syntax+ EOF;
-syntax :  loop | function | update | query  |  source | component | project | element | model | theme | callable | routes | page | animation | module | property | declare_variable;
+syntax :  loop | function | update | query  |  source | component | component_is | project | element | model | theme | callable | routes | routes_through | page | animation | module | property | declare_variable;
 function_syntax : switch_block | if | assign_variable | constructor | function_call | return | declare_variable ;
 component : COMPONENT_KEYWORD var_name curly_block ;
+component_is : COMPONENT_KEYWORD var_name IS_LAYOUT curly_block ;
 element : ELEMENT_KEYWORD var_name curly_block ;
 theme : THEME_KEYWORD var_name curly_block ;
 model : MODEL_KEYWORD var_name curly_block ;
@@ -13,7 +14,7 @@ routes_through: ROUTES_KEYWORD var_name (THROUGH_KEYWORD (var_name ((COMMA var_n
 project : PROJECT_KEYWORD var_name curly_block ;
 page : PAGE_KEYWORD var_name curly_block ;
 animation : ANIMATION_KEYWORD var_name curly_block ;
-module : MODULE_KEYWORD var_name curly_block ;
+module : MODULE_KEYWORD var_name STATEMENT_END? ;
 //TODO make params a rule for query and more (arg1, arg2, ...args)
 query : QUERY_KEYWORD  var_name_with_params curly_block ;
 source : SOURCE_KEYWORD path STATEMENT_END? ;
@@ -38,6 +39,7 @@ PAGE_KEYWORD : ('::page') ;
 MODEL_KEYWORD : ('model') ;
 PROJECT_KEYWORD : ('::project') ;
 THROUGH_KEYWORD: ('through');
+IS_LAYOUT : ('is')[\\s]+('layout') ;
 number : DIGITS ;
 DECIMALS : (DIGITS '.' DIGITS) ;
 DIGITS :  ([0-9]+) ;

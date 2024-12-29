@@ -17,8 +17,11 @@ import java.io.File;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class RouteGroupAloftObject extends AloftObject {
+
+    protected ArrayList<Route> routes = new ArrayList<>();
 
     public RouteGroupAloftObject(ParserRuleContext ctx, CompiledObjectsRegister register, File file) throws CompilerException {
         super(ctx, register, file);
@@ -54,44 +57,39 @@ public class RouteGroupAloftObject extends AloftObject {
     public void compile(List<AloftParser.SyntaxContext> syntax, CompiledObjectsRegister register) throws CompilerException {
         System.out.println("PARSE PROPS - ROUTES");
         parseProperties(syntax, register);
+        System.out.println("PARSED PROPS");
         register.register(RouteGroupAloftObject.class, this, new ContextContainer(ctx, file));
         System.out.println("DONE WITH ROUTES");
     }
 
     @Override
-    public void parseProperties(List<AloftParser.SyntaxContext> syntax, CompiledObjectsRegister register) throws CompilerException {
+    public void parseProperties(List<AloftParser.SyntaxContext> syntax, CompiledObjectsRegister register) {
         System.out.println("PARSE PROPS -- INNER");
-        for(AloftParser.SyntaxContext ctx : syntax) {
-            AloftParser.PropertyContext pCtx = ctx.property();
-            System.out.println(pCtx.getText());
-            if(!__.isset(pCtx)) continue;
-            AloftParser.Var_nameContext varCtx = pCtx.var_name();
-            String var_name = varCtx.getText();
-            AloftParser.Property_valueContext pValCtx = pCtx.property_value();
-            ContextContainer valueCtx = new ContextContainer(pValCtx, file);
-            String var_value = pValCtx.getText();
-            System.out.println("var_name=" + var_name);
-            System.out.println("var_value=" + var_value);
-            AloftObjectProperty property = findProperty(var_name);
-            System.out.println("TEST=" + __.isset(property));
-            if(__.isset(property)) properties.add(property.cloneProperty(valueCtx));
-            else if(allowsWildcardProperties()) properties.add(new AloftObjectProperty(var_name, new PathT(), false).cloneProperty(valueCtx));
-            else new ContextContainer(varCtx, file).e("Unknown property name for object.", CompilerException.ExceptionType.CRITICAL);
-            System.out.println(properties.size());
+        try {
+            for (AloftParser.SyntaxContext ctx : syntax) {
+                AloftParser.PropertyContext pCtx = ctx.property();
+                System.out.println(pCtx.getText());
+                AloftParser.Var_nameContext varCtx = pCtx.var_name();
+                String var_name = varCtx.getText();
+                AloftParser.Property_valueContext pValCtx = pCtx.property_value();
+                ContextContainer valueCtx = new ContextContainer(pValCtx, file);
+                String var_value = pValCtx.getText();
+                if(!__.isset(this.routes)) System.exit(44);
+                routes.add(buildRoute(var_name, var_value, register));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         System.out.println("DONE");
     }
 
-    public ArrayList<Route> getRoutes(CompiledObjectsRegister register) {
-        ArrayList<Route> routes = new ArrayList<>();
-        for(AloftObjectProperty route : properties)
-            routes.add(buildRoute(route, register));
+    public ArrayList<Route> getRoutes() {
+        System.out.println(routes.size());
+        System.exit(23);
         return routes;
     }
 
-    private Route buildRoute(AloftObjectProperty route, CompiledObjectsRegister register) {
-        String named = route.getName();
-        String path = route.getValue().get();
+    private Route buildRoute(String named, String path, CompiledObjectsRegister register) {
         _AloftPage page = ((PageAloftObject) register.getList(PageAloftObject.class, named).get(0)).getCompilerPage();
         return new Route(path, "GET", page);
     }

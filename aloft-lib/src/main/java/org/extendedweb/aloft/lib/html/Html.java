@@ -12,6 +12,7 @@ import org.extendedweb.aloft.lib._AloftPage;
 import org.extendedweb.aloft.lib.http.supporting.Response;
 import com.sun.net.httpserver.HttpExchange;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -61,7 +62,7 @@ public class Html {
             return renderElement((_AloftElement) object);
         if(type == RenderType.ELEMENT)
             return renderElement((AloftElement) object);
-        return "";
+        return "hi";
     }
 
     public String string(String[] path) {

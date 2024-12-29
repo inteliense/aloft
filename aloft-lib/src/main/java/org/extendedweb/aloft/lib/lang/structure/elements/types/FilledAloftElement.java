@@ -4,7 +4,6 @@ import org.extendedweb.aloft.lib.lang.base.ElementMapper;
 import org.extendedweb.aloft.lib.lang.structure.AloftTheme;
 import org.extendedweb.aloft.lib.lang.structure.components.AloftObjectProperties;
 import org.extendedweb.aloft.lib.lang.structure.elements.base.AloftElement;
-import org.extendedweb.aloft.lib.lang.structure.elements.base.AloftElementSubtype;
 import org.extendedweb.aloft.lib.html.elements.HtmlElement;
 import org.extendedweb.aloft.lib.lang.types.base.T;
 
@@ -65,12 +64,6 @@ public class FilledAloftElement extends AloftElement {
     protected boolean isExtensible() {
         return false;
     }
-
-    @Override
-    protected boolean hasMultipleSubtypes() {
-        return false;
-    }
-
     @Override
     protected boolean acceptsChild() {
         return false;
@@ -90,9 +83,4 @@ public class FilledAloftElement extends AloftElement {
         props.put("use-view", T.bool());
         return props;
     }
-
-    @Override
-    protected void subtypes(ArrayList<AloftElementSubtype> subtypes) {
-
     }
-}

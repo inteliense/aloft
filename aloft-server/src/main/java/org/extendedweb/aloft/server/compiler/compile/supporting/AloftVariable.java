@@ -17,12 +17,24 @@ public class AloftVariable {
     private String identifier;
     private T type;
     private V value;
+    private boolean scoped;
+    private String xpath = "";
 
-    public AloftVariable(AloftAccess.AloftAccessType access, String identifier, T type, V value) {
+    public AloftVariable(AloftAccess.AloftAccessType access, String identifier, T type, V value, boolean scoped, String componentName) {
         this.access = access;
         this.identifier = identifier;
         this.type = type;
         this.value = value;
+        this.scoped = scoped;
+        this.xpath = "/" + componentName + ":" + identifier;
+    }
+
+    public AloftVariable(String identifier, T type, V value, boolean scoped, String componentName) {
+        this.identifier = identifier;
+        this.type = type;
+        this.value = value;
+        this.scoped = scoped;
+        this.xpath = "/" + identifier + ":" + componentName;
     }
 
     public AloftVariable(AloftAccess.AloftAccessType access, String identifier, T type, AloftExpression value) {
@@ -30,16 +42,17 @@ public class AloftVariable {
         this.identifier = identifier;
         this.type = type;
         this.value = new BooleanT().value(value.evaluate());
+        this.xpath = "/" + identifier;
     }
 
-    public static ArrayList<AloftVariable> fromContext(AloftParser.Declare_variableContext ctx) {
+    public static ArrayList<AloftVariable> fromContext(AloftParser.Declare_variableContext ctx, String componentName) {
         ArrayList<AloftVariable> allVars = new ArrayList<>();
         AloftAccess access;
         ArrayList<String> indentifiers;
         T type;
         AloftParser.VariableContext varCtx = ctx.variable();
         access = getAccess(varCtx);
-        System.out.println(access);
+        System.out.println(access.getType().name());
         indentifiers = getIdentifiers(varCtx);
         System.out.println(indentifiers.toString());
         AloftParser.Var_typeContext typeCtx = varCtx.var_type();
@@ -50,7 +63,7 @@ public class AloftVariable {
             if(__.isset(exprCtx)) {
                 allVars.add(new AloftVariable(access.getType(), identifier, type, parseExpression(exprCtx)));
             } else {
-                allVars.add(new AloftVariable(access.getType(), identifier, type, V.unset()));
+                allVars.add(new AloftVariable(access.getType(), identifier, type, V.unset(), true, componentName));
             }
         }
         return allVars;
@@ -62,6 +75,32 @@ public class AloftVariable {
 
     public void set(AloftParser.ExpressionContext ctx) {
 
+    }
+
+    public void set(V value) {
+
+    }
+
+    public void next(String component) {
+        xpath = xpath + "/" + component;
+    }
+
+    public String getXpath() {
+        return xpath;
+    }
+
+    public boolean isCurrent(String component, String var) {
+        System.out.println(xpath);
+        String[] split = this.xpath.split("/");
+        String[] split2 = split[1].split(":");
+        if(split2[0].equals(component) && split2[1].equals(var)) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean nonExistent(String component, String var) {
+        return !xpath.contains("/" + component + ":" + var);
     }
 
     public boolean isset() {
@@ -78,6 +117,10 @@ public class AloftVariable {
 
     public boolean isRequired() {
         return this.access == AloftAccess.AloftAccessType.PUBLIC_REQUIRED || this.access == AloftAccess.AloftAccessType.PRIVATE_REQUIRED;
+    }
+
+    public boolean isScoped() {
+        return scoped;
     }
 
     private static T getType(String type) {

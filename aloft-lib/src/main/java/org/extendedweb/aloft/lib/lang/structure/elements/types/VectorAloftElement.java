@@ -4,8 +4,8 @@ import org.extendedweb.aloft.lib.lang.base.ElementMapper;
 import org.extendedweb.aloft.lib.lang.structure.AloftTheme;
 import org.extendedweb.aloft.lib.lang.structure.components.AloftObjectProperties;
 import org.extendedweb.aloft.lib.lang.structure.elements.base.AloftElement;
-import org.extendedweb.aloft.lib.lang.structure.elements.base.AloftElementSubtype;
 import org.extendedweb.aloft.lib.html.elements.HtmlElement;
+import org.extendedweb.aloft.lib.lang.types.base.T;
 import org.extendedweb.aloft.utils.global.__;
 import org.jsoup.parser.ParseSettings;
 import org.jsoup.parser.Parser;
@@ -172,25 +172,28 @@ public class VectorAloftElement extends AloftElement {
     }
 
     @Override
-    protected boolean hasMultipleSubtypes() {
-        return false;
-    }
-
-    @Override
     protected boolean acceptsChild() {
         return false;
     }
 
     @Override
     protected void setupProperties(AloftObjectProperties vars) {
-        this.vars.put("view-box", null);
-        this.vars.put("width", null);
-        this.vars.put("height", null);
-        this.vars.put("element", null);
+//        this.vars.put("view-box", null);
+//        this.vars.put("width", null);
+//        this.vars.put("height", null);
+//        this.vars.put("element", null);
+    }
+
+    public static AloftObjectProperties properties() {
+        AloftObjectProperties props = new AloftObjectProperties();
+        props.put("view-box", T.instance("title", T.string()), true);
+        props.put("width", T.instance("message", T.number()), true);
+        props.put("height", T.instance("message", T.number()), true);
+        return props;
     }
 
     @Override
-    protected void subtypes(ArrayList<AloftElementSubtype> subtypes) {
-
+    public HtmlElement create(AloftTheme theme, ElementMapper mapper) {
+        return null;
     }
 }

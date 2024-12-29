@@ -4,7 +4,6 @@ import org.extendedweb.aloft.lib.lang.base.ElementMapper;
 import org.extendedweb.aloft.lib.lang.structure.AloftTheme;
 import org.extendedweb.aloft.lib.lang.structure.components.AloftObjectProperties;
 import org.extendedweb.aloft.lib.lang.structure.elements.base.AloftElement;
-import org.extendedweb.aloft.lib.lang.structure.elements.base.AloftElementSubtype;
 import org.extendedweb.aloft.lib.html.elements.HtmlElement;
 import org.extendedweb.aloft.lib.html.elements.types.Content;
 import org.extendedweb.aloft.lib.lang.structure.elements.base.styles.AloftHeaderInstance;
@@ -66,11 +65,6 @@ public class HeaderAloftElement extends AloftElement {
     }
 
     @Override
-    protected boolean hasMultipleSubtypes() {
-        return false;
-    }
-
-    @Override
     protected boolean acceptsChild() {
         return true;
     }
@@ -78,11 +72,6 @@ public class HeaderAloftElement extends AloftElement {
     @Override
     protected void setupProperties(AloftObjectProperties vars) {
         vars.replace("tag", "h1");
-    }
-
-    @Override
-    protected void subtypes(ArrayList<AloftElementSubtype> subtypes) {
-
     }
 
     @Override

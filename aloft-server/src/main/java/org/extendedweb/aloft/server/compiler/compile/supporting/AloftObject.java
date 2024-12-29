@@ -1,12 +1,15 @@
 package org.extendedweb.aloft.server.compiler.compile.supporting;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.extendedweb.aloft.lib.lang.structure.components.AloftComponent;
 import org.extendedweb.aloft.lib.lang.types.base.V;
+import org.extendedweb.aloft.lib.lang.types.t.AloftComponentT;
 import org.extendedweb.aloft.lib.lang.types.t.PathT;
 import org.extendedweb.aloft.server.compiler.compile.base.AloftFunction;
 import org.extendedweb.aloft.server.compiler.compile.base.AloftFunctionCompiler;
 import org.extendedweb.aloft.server.compiler.compile.base.AloftFunctionContainer;
 import org.extendedweb.aloft.server.compiler.compile.base.register.CompiledObjectsRegister;
+import org.extendedweb.aloft.server.compiler.compile.base.register.ComponentObjectRegister;
 import org.extendedweb.aloft.server.compiler.exceptions.CompilerException;
 import org.extendedweb.aloft.server.grammar.antlr.AloftParser;
 import org.extendedweb.aloft.utils.global.__;
@@ -16,28 +19,35 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public abstract class AloftObject implements CompilesAloftObjects {
 
     private String named = null;
     private ArrayList<AloftObjectProperty> defaultProperties = new ArrayList<>();
     protected ArrayList<AloftObjectProperty> properties = new ArrayList<>();
-    protected ArrayList<AloftVariable> variables = new ArrayList<>();
+    protected AtomicReference<ArrayList<AloftVariable>> variables = new AtomicReference<ArrayList<AloftVariable>>();
     protected ArrayList<AloftFunctionContainer> functions = new ArrayList<>();
     private Class<?> type = null;
     private List<AloftParser.SyntaxContext> syntax;
     protected File file = null;
     protected ParserRuleContext ctx;
+    protected CompiledObjectsRegister register;
 
     public AloftObject() { }
 
     public AloftObject(ParserRuleContext ctx, CompiledObjectsRegister register, File file) throws CompilerException {
         this.file = file;
         this.ctx = ctx;
+        this.register = register;
         properties(defaultProperties);
         List<AloftParser.SyntaxContext> syntax = preCompile(ctx);
         this.syntax = syntax;
         compile(syntax, register);
+    }
+
+    protected void registerComponent(AloftComponent component) {
+        this.register.getComponentsRegister().register(component.getName(), new AloftComponentClass(component, this.register, this.variables));
     }
 
     @Override
@@ -73,41 +83,35 @@ public abstract class AloftObject implements CompilesAloftObjects {
         for(AloftParser.SyntaxContext ctx : syntax) {
             AloftParser.Declare_variableContext declareCtx = ctx.declare_variable();
             if(!__.isset(declareCtx)) continue;
-            ArrayList<AloftVariable> vars = AloftVariable.fromContext(declareCtx);
-            variables.addAll(vars);
+            ArrayList<AloftVariable> vars = AloftVariable.fromContext(declareCtx, getName());
+            ArrayList<AloftVariable> __v = variables.get();
+            __v.addAll(vars);
+            variables.set(__v);
         }
         System.out.println("DONE");
     }
 
     @Override
     public void parseProperties(List<AloftParser.SyntaxContext> syntax, CompiledObjectsRegister register) throws CompilerException {
-        System.out.println("PARSE PROPS -- INNER");
         for(AloftParser.SyntaxContext ctx : syntax) {
             AloftParser.PropertyContext pCtx = ctx.property();
-            System.out.println(pCtx.getText());
             if(!__.isset(pCtx)) continue;
             AloftParser.Var_nameContext varCtx = pCtx.var_name();
             String var_name = varCtx.getText();
-            AloftParser.Property_valueContext pValCtx = pCtx.property_value();
-            ContextContainer valueCtx = new ContextContainer(pValCtx, file);
-            String var_value = pValCtx.getText();
-            System.out.println("var_name=" + var_name);
-            System.out.println("var_value=" + var_value);
             AloftObjectProperty property = findProperty(var_name);
-            System.out.println("TEST=" + __.isset(property));
-            System.out.println("v=" + property.cloneProperty(valueCtx).getType().getClass());
-            if(__.isset(property)) properties.add(property.cloneProperty(valueCtx));
-            else if(allowsWildcardProperties()) properties.add(new AloftObjectProperty(var_name, new PathT(), false).cloneProperty(valueCtx));
-            else new ContextContainer(varCtx, file).e("Unknown property name for object.", CompilerException.ExceptionType.CRITICAL);
-            System.out.println(properties.size());
+            properties.add(property.cloneProperty(property.getType(), new ContextContainer(pCtx.property_value(), file), variables));
         }
-        System.out.println("DONE");
     }
 
-    protected V getProperty(String key) {
-        System.out.println(key);
+    protected AloftObjectProperty getProperty(String key) {
         for(AloftObjectProperty prop : properties) {
-            System.out.println(prop.getName());
+            if(__.same(prop.getName(), key)) return prop;
+        }
+        return null;
+    }
+
+    protected V getPropertyValue(String key) {
+        for(AloftObjectProperty prop : properties) {
             if(__.same(prop.getName(), key)) return prop.getValue();
         }
         return V.nothing();

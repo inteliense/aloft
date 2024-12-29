@@ -1,17 +1,13 @@
 package org.extendedweb.aloft.lib.lang.structure.elements.types;
 
-import org.extendedweb.aloft.lib.AloftElementActions;
-import org.extendedweb.aloft.lib.AloftElementListeners;
 import org.extendedweb.aloft.lib.lang.base.ElementMapper;
 import org.extendedweb.aloft.lib.lang.structure.AloftTheme;
 import org.extendedweb.aloft.lib.lang.structure.components.AloftObjectProperties;
 import org.extendedweb.aloft.lib.lang.structure.elements.base.AloftElement;
-import org.extendedweb.aloft.lib.lang.structure.elements.base.AloftElementSubtype;
 import org.extendedweb.aloft.lib.lang.structure.style.AloftStyle;
 import org.extendedweb.aloft.lib.lang.structure.style.AloftStylePair;
 import org.extendedweb.aloft.lib.html.elements.HtmlElement;
 import org.extendedweb.aloft.lib.html.elements.types.Content;
-import org.extendedweb.aloft.lib.lang.types.base.V;
 import org.extendedweb.aloft.utils.global.__;
 
 import java.util.ArrayList;
@@ -19,11 +15,6 @@ import java.util.ArrayList;
 public class InputAloftElement extends AloftElement {
 
     public InputAloftElement() { super(); init(); }
-
-    public InputAloftElement(String subtype) {
-        super(subtype);
-        init();
-    }
 
     public void setPlaceholder(String placeholder) {
         this.vars.replace("placeholder", placeholder);
@@ -37,205 +28,205 @@ public class InputAloftElement extends AloftElement {
         this.vars.replace("help-text", helpText);
     }
 
-    @Override
-    protected void subtypes(ArrayList<AloftElementSubtype> subtypes) {
-        this.subtypes.add(new AloftElementSubtype(constructSubtype("__text_input__")) {
-            @Override
-            public HtmlElement create(AloftTheme theme, ElementMapper mapper) {
-                HtmlElement root = createElement("div");
-                HtmlElement group = createElement("div");
-                HtmlElement below = createElement("span");
-
-                if(__.isset(var("label"))) {
-                    HtmlElement label = createElement("span");
-                    Content labelTxt = new Content(var("label"));
-                    label.addChild(labelTxt);
-                    applyStyle("label", InputAloftElement.class, label, theme);
-                    root.addChild("label", label);
-                }
-
-                if(__.isset(var("prepend-text"))) {
-                    HtmlElement prepend = createElement("div");
-                    HtmlElement prependChild = createElement("span");
-                    Content prependText = new Content(var("prepend-text"));
-                    prependChild.addChild(prependText);
-                    applyStyle("prepend-text", InputAloftElement.class, prependChild, theme);
-                    prepend.addChild(prependChild);
-                    applyStyle("prepend-container", InputAloftElement.class, prepend, theme);
-                    group.addChild(prepend);
-                }
-
-                HtmlElement input = createElement("input");
-                applyStyle("text-input", InputAloftElement.class, input, theme);
-                if(__.isset(var("placeholder"))) input.addAttribute("placeholder", var("placeholder"));
-                group.addChild("input", input);
-
-                if(__.isset(var("help-text"))) {
-                    Content helpTxt = new Content(var("help-text"));
-                    below.addChild(helpTxt);
-                }
-
-                applyStyle("help-text", InputAloftElement.class, below, theme);
-                group.addChild("help-text", below);
-                applyStyle("text-group", InputAloftElement.class, group, theme);
-                root.addChild(group);
-                applyStyle("root", InputAloftElement.class, root, theme);
-                applyListeners("input", "input", root);
-                return root;
-            }
-            @Override
-            public String getName() {
-                return "__text_input__";
-            }
-        });
-        this.subtypes.add(new AloftElementSubtype(constructSubtype("__password_input__")) {
-            @Override
-            public HtmlElement create(AloftTheme theme, ElementMapper mapper) {
-                HtmlElement root = createElement("div");
-                HtmlElement group = createElement("div");
-                HtmlElement below = createElement("span");
-
-                if(__.isset(var("label"))) {
-                    HtmlElement label = createElement("span");
-                    Content labelTxt = new Content(var("label"));
-                    label.addChild(labelTxt);
-                    applyStyle("label", InputAloftElement.class, label, theme);
-                    root.addChild("label", label);
-                }
-
-                if(__.isset(var("prepend-text"))) {
-                    HtmlElement prepend = createElement("div");
-                    HtmlElement prependChild = createElement("span");
-                    Content prependText = new Content(var("prepend-text"));
-                    prependChild.addChild(prependText);
-                    applyStyle("prepend-text", InputAloftElement.class, prependChild, theme);
-                    prepend.addChild(prependChild);
-                    applyStyle("prepend-container", InputAloftElement.class, prepend, theme);
-                    group.addChild(prepend);
-                }
-
-                HtmlElement input = createElement("input");
-                applyStyle("password-input", InputAloftElement.class, input, theme);
-                if(__.isset(var("placeholder"))) input.addAttribute("placeholder", var("placeholder"));
-                group.addChild("input", input);
-
-                if(__.isset(var("help-text"))) {
-                    Content helpTxt = new Content(var("help-text"));
-                    below.addChild(helpTxt);
-                }
-
-                applyStyle("help-text", InputAloftElement.class, below, theme);
-                group.addChild("help-text", below);
-                applyStyle("text-group", InputAloftElement.class, group, theme);
-                root.addChild(group);
-                applyStyle("root", InputAloftElement.class, root, theme);
-                applyListeners("input", "input", root);
-                return root;
-            }
-            @Override
-            public String getName() {
-                return "__password_input__";
-            }
-        });
-        this.subtypes.add(new AloftElementSubtype(constructSubtype("__textarea_input__")) {
-            @Override
-            public HtmlElement create(AloftTheme theme, ElementMapper mapper) {
-                HtmlElement root = createElement("div");
-                HtmlElement group = createElement("div");
-                HtmlElement below = createElement("span");
-
-                if(__.isset(var("label"))) {
-                    HtmlElement label = createElement("span");
-                    Content labelTxt = new Content(var("label"));
-                    label.addChild(labelTxt);
-                    applyStyle("label", InputAloftElement.class, label, theme);
-                    root.addChild("label", label);
-                }
-
-                if(__.isset(var("prepend-text"))) {
-                    HtmlElement prepend = createElement("div");
-                    HtmlElement prependChild = createElement("span");
-                    Content prependText = new Content(var("prepend-text"));
-                    prependChild.addChild(prependText);
-                    applyStyle("prepend-text", InputAloftElement.class, prependChild, theme);
-                    prepend.addChild(prependChild);
-                    applyStyle("prepend-container", InputAloftElement.class, prepend, theme);
-                    group.addChild(prepend);
-                }
-
-                HtmlElement input = createElement("input");
-                applyStyle("text-input", InputAloftElement.class, input, theme);
-                if(__.isset(var("placeholder"))) input.addAttribute("placeholder", var("placeholder"));
-                group.addChild("input", input);
-
-                if(__.isset(var("help-text"))) {
-                    Content helpTxt = new Content(var("help-text"));
-                    below.addChild("bottom-text", helpTxt);
-                }
-
-                applyStyle("help-text", InputAloftElement.class, below, theme);
-                group.addChild(below);
-                applyStyle("text-group", InputAloftElement.class, group, theme);
-                root.addChild(group);
-                applyStyle("root", InputAloftElement.class, root, theme);
-                applyListeners("input", "input", root);
-                return root;
-            }
-            @Override
-            public String getName() {
-                return "__text_input__";
-            }
-        });
-        this.subtypes.add(new AloftElementSubtype(constructSubtype("__select_input__")) {
-            @Override
-            public HtmlElement create(AloftTheme theme, ElementMapper mapper) {
-                HtmlElement root = createElement("div");
-                HtmlElement group = createElement("div");
-                HtmlElement below = createElement("span");
-
-                if(__.isset(var("label"))) {
-                    HtmlElement label = createElement("span");
-                    Content labelTxt = new Content(var("label"));
-                    label.addChild(labelTxt);
-                    applyStyle("label", InputAloftElement.class, label, theme);
-                    root.addChild("label", label);
-                }
-
-                if(__.isset(var("prepend-text"))) {
-                    HtmlElement prepend = createElement("div");
-                    HtmlElement prependChild = createElement("span");
-                    Content prependText = new Content(var("prepend-text"));
-                    prependChild.addChild(prependText);
-                    applyStyle("prepend-text", InputAloftElement.class, prependChild, theme);
-                    prepend.addChild(prependChild);
-                    applyStyle("prepend-container", InputAloftElement.class, prepend, theme);
-                    group.addChild(prepend);
-                }
-
-                HtmlElement input = createElement("input");
-                applyStyle("text-input", InputAloftElement.class, input, theme);
-                if(__.isset(var("placeholder"))) input.addAttribute("placeholder", var("placeholder"));
-                group.addChild("input", input);
-
-                if(__.isset(var("help-text"))) {
-                    Content helpTxt = new Content(var("help-text"));
-                    below.addChild("bottom-text", helpTxt);
-                }
-
-                applyStyle("help-text", InputAloftElement.class, below, theme);
-                group.addChild(below);
-                applyStyle("text-group", InputAloftElement.class, group, theme);
-                root.addChild(group);
-                applyStyle("root", InputAloftElement.class, root, theme);
-                applyListeners("input", "input", root);
-                return root;
-            }
-            @Override
-            public String getName() {
-                return "__text_input__";
-            }
-        });
-    }
+//    @Override
+//    protected void subtypes(ArrayList<AloftElementSubtype> subtypes) {
+//        this.subtypes.add(new AloftElementSubtype(constructSubtype("__text_input__")) {
+//            @Override
+//            public HtmlElement create(AloftTheme theme, ElementMapper mapper) {
+//                HtmlElement root = createElement("div");
+//                HtmlElement group = createElement("div");
+//                HtmlElement below = createElement("span");
+//
+//                if(__.isset(var("label"))) {
+//                    HtmlElement label = createElement("span");
+//                    Content labelTxt = new Content(var("label"));
+//                    label.addChild(labelTxt);
+//                    applyStyle("label", InputAloftElement.class, label, theme);
+//                    root.addChild("label", label);
+//                }
+//
+//                if(__.isset(var("prepend-text"))) {
+//                    HtmlElement prepend = createElement("div");
+//                    HtmlElement prependChild = createElement("span");
+//                    Content prependText = new Content(var("prepend-text"));
+//                    prependChild.addChild(prependText);
+//                    applyStyle("prepend-text", InputAloftElement.class, prependChild, theme);
+//                    prepend.addChild(prependChild);
+//                    applyStyle("prepend-container", InputAloftElement.class, prepend, theme);
+//                    group.addChild(prepend);
+//                }
+//
+//                HtmlElement input = createElement("input");
+//                applyStyle("text-input", InputAloftElement.class, input, theme);
+//                if(__.isset(var("placeholder"))) input.addAttribute("placeholder", var("placeholder"));
+//                group.addChild("input", input);
+//
+//                if(__.isset(var("help-text"))) {
+//                    Content helpTxt = new Content(var("help-text"));
+//                    below.addChild(helpTxt);
+//                }
+//
+//                applyStyle("help-text", InputAloftElement.class, below, theme);
+//                group.addChild("help-text", below);
+//                applyStyle("text-group", InputAloftElement.class, group, theme);
+//                root.addChild(group);
+//                applyStyle("root", InputAloftElement.class, root, theme);
+//                applyListeners("input", "input", root);
+//                return root;
+//            }
+//            @Override
+//            public String getName() {
+//                return "__text_input__";
+//            }
+//        });
+//        this.subtypes.add(new AloftElementSubtype(constructSubtype("__password_input__")) {
+//            @Override
+//            public HtmlElement create(AloftTheme theme, ElementMapper mapper) {
+//                HtmlElement root = createElement("div");
+//                HtmlElement group = createElement("div");
+//                HtmlElement below = createElement("span");
+//
+//                if(__.isset(var("label"))) {
+//                    HtmlElement label = createElement("span");
+//                    Content labelTxt = new Content(var("label"));
+//                    label.addChild(labelTxt);
+//                    applyStyle("label", InputAloftElement.class, label, theme);
+//                    root.addChild("label", label);
+//                }
+//
+//                if(__.isset(var("prepend-text"))) {
+//                    HtmlElement prepend = createElement("div");
+//                    HtmlElement prependChild = createElement("span");
+//                    Content prependText = new Content(var("prepend-text"));
+//                    prependChild.addChild(prependText);
+//                    applyStyle("prepend-text", InputAloftElement.class, prependChild, theme);
+//                    prepend.addChild(prependChild);
+//                    applyStyle("prepend-container", InputAloftElement.class, prepend, theme);
+//                    group.addChild(prepend);
+//                }
+//
+//                HtmlElement input = createElement("input");
+//                applyStyle("password-input", InputAloftElement.class, input, theme);
+//                if(__.isset(var("placeholder"))) input.addAttribute("placeholder", var("placeholder"));
+//                group.addChild("input", input);
+//
+//                if(__.isset(var("help-text"))) {
+//                    Content helpTxt = new Content(var("help-text"));
+//                    below.addChild(helpTxt);
+//                }
+//
+//                applyStyle("help-text", InputAloftElement.class, below, theme);
+//                group.addChild("help-text", below);
+//                applyStyle("text-group", InputAloftElement.class, group, theme);
+//                root.addChild(group);
+//                applyStyle("root", InputAloftElement.class, root, theme);
+//                applyListeners("input", "input", root);
+//                return root;
+//            }
+//            @Override
+//            public String getName() {
+//                return "__password_input__";
+//            }
+//        });
+//        this.subtypes.add(new AloftElementSubtype(constructSubtype("__textarea_input__")) {
+//            @Override
+//            public HtmlElement create(AloftTheme theme, ElementMapper mapper) {
+//                HtmlElement root = createElement("div");
+//                HtmlElement group = createElement("div");
+//                HtmlElement below = createElement("span");
+//
+//                if(__.isset(var("label"))) {
+//                    HtmlElement label = createElement("span");
+//                    Content labelTxt = new Content(var("label"));
+//                    label.addChild(labelTxt);
+//                    applyStyle("label", InputAloftElement.class, label, theme);
+//                    root.addChild("label", label);
+//                }
+//
+//                if(__.isset(var("prepend-text"))) {
+//                    HtmlElement prepend = createElement("div");
+//                    HtmlElement prependChild = createElement("span");
+//                    Content prependText = new Content(var("prepend-text"));
+//                    prependChild.addChild(prependText);
+//                    applyStyle("prepend-text", InputAloftElement.class, prependChild, theme);
+//                    prepend.addChild(prependChild);
+//                    applyStyle("prepend-container", InputAloftElement.class, prepend, theme);
+//                    group.addChild(prepend);
+//                }
+//
+//                HtmlElement input = createElement("input");
+//                applyStyle("text-input", InputAloftElement.class, input, theme);
+//                if(__.isset(var("placeholder"))) input.addAttribute("placeholder", var("placeholder"));
+//                group.addChild("input", input);
+//
+//                if(__.isset(var("help-text"))) {
+//                    Content helpTxt = new Content(var("help-text"));
+//                    below.addChild("bottom-text", helpTxt);
+//                }
+//
+//                applyStyle("help-text", InputAloftElement.class, below, theme);
+//                group.addChild(below);
+//                applyStyle("text-group", InputAloftElement.class, group, theme);
+//                root.addChild(group);
+//                applyStyle("root", InputAloftElement.class, root, theme);
+//                applyListeners("input", "input", root);
+//                return root;
+//            }
+//            @Override
+//            public String getName() {
+//                return "__text_input__";
+//            }
+//        });
+//        this.subtypes.add(new AloftElementSubtype(constructSubtype("__select_input__")) {
+//            @Override
+//            public HtmlElement create(AloftTheme theme, ElementMapper mapper) {
+//                HtmlElement root = createElement("div");
+//                HtmlElement group = createElement("div");
+//                HtmlElement below = createElement("span");
+//
+//                if(__.isset(var("label"))) {
+//                    HtmlElement label = createElement("span");
+//                    Content labelTxt = new Content(var("label"));
+//                    label.addChild(labelTxt);
+//                    applyStyle("label", InputAloftElement.class, label, theme);
+//                    root.addChild("label", label);
+//                }
+//
+//                if(__.isset(var("prepend-text"))) {
+//                    HtmlElement prepend = createElement("div");
+//                    HtmlElement prependChild = createElement("span");
+//                    Content prependText = new Content(var("prepend-text"));
+//                    prependChild.addChild(prependText);
+//                    applyStyle("prepend-text", InputAloftElement.class, prependChild, theme);
+//                    prepend.addChild(prependChild);
+//                    applyStyle("prepend-container", InputAloftElement.class, prepend, theme);
+//                    group.addChild(prepend);
+//                }
+//
+//                HtmlElement input = createElement("input");
+//                applyStyle("text-input", InputAloftElement.class, input, theme);
+//                if(__.isset(var("placeholder"))) input.addAttribute("placeholder", var("placeholder"));
+//                group.addChild("input", input);
+//
+//                if(__.isset(var("help-text"))) {
+//                    Content helpTxt = new Content(var("help-text"));
+//                    below.addChild("bottom-text", helpTxt);
+//                }
+//
+//                applyStyle("help-text", InputAloftElement.class, below, theme);
+//                group.addChild(below);
+//                applyStyle("text-group", InputAloftElement.class, group, theme);
+//                root.addChild(group);
+//                applyStyle("root", InputAloftElement.class, root, theme);
+//                applyListeners("input", "input", root);
+//                return root;
+//            }
+//            @Override
+//            public String getName() {
+//                return "__text_input__";
+//            }
+//        });
+//    }
 
     @Override
     protected String name() {
@@ -260,11 +251,6 @@ public class InputAloftElement extends AloftElement {
     @Override
     protected boolean isExtensible() {
         return false;
-    }
-
-    @Override
-    protected boolean hasMultipleSubtypes() {
-        return true;
     }
 
     @Override
@@ -318,4 +304,8 @@ public class InputAloftElement extends AloftElement {
         addConditionalStyle("text-input-validation","input-success", "help-text", s4);
     }
 
+    @Override
+    public HtmlElement create(AloftTheme theme, ElementMapper mapper) {
+        return null;
+    }
 }

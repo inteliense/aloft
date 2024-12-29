@@ -1,5 +1,8 @@
 package org.extendedweb.aloft.lib.tests.components;
 
+import org.extendedweb.aloft.lib.html.elements.HtmlElement;
+import org.extendedweb.aloft.lib.lang.base.ElementMapper;
+import org.extendedweb.aloft.lib.lang.structure.AloftTheme;
 import org.extendedweb.aloft.lib.lang.structure.elements.base.AloftElement;
 import org.extendedweb.aloft.lib.lang.structure.elements.base.validation.EmailValidator;
 import org.extendedweb.aloft.lib.lang.structure.elements.base.validation.conditionals.base.ConditionalValueSet;
@@ -29,7 +32,7 @@ public class _MyLoginForm extends _AloftComponent {
     private AloftElement a() {
         CenteredAloftElement centered = new CenteredAloftElement();
         ColumnAloftElement column = new ColumnAloftElement();
-        ButtonAloftElement btn = new ButtonAloftElement("__button_default__");
+        ButtonAloftElement btn = new ButtonAloftElement();
   //      TextAloftElement txt = new TextAloftElement("LOG IN");
         HeaderAloftElement txt = new HeaderAloftElement("LOG IN");
         btn.setText("Sign in");
@@ -58,4 +61,8 @@ public class _MyLoginForm extends _AloftComponent {
         return new _MyPasswordFieldElement().build(vars);
     }
 
+    @Override
+    public HtmlElement create(AloftTheme theme, ElementMapper mapper) {
+        return null;
+    }
 }

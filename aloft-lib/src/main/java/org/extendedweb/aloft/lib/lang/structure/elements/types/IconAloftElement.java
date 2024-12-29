@@ -4,8 +4,8 @@ import org.extendedweb.aloft.lib.lang.base.ElementMapper;
 import org.extendedweb.aloft.lib.lang.structure.AloftTheme;
 import org.extendedweb.aloft.lib.lang.structure.components.AloftObjectProperties;
 import org.extendedweb.aloft.lib.lang.structure.elements.base.AloftElement;
-import org.extendedweb.aloft.lib.lang.structure.elements.base.AloftElementSubtype;
 import org.extendedweb.aloft.lib.html.elements.HtmlElement;
+import org.extendedweb.aloft.lib.lang.types.base.T;
 import org.extendedweb.aloft.utils.global.__;
 
 import java.util.ArrayList;
@@ -62,25 +62,21 @@ public class IconAloftElement extends AloftElement {
     }
 
     @Override
-    protected boolean hasMultipleSubtypes() {
-        return false;
-    }
-
-    @Override
     protected boolean acceptsChild() {
         return false;
     }
 
     @Override
     protected void setupProperties(AloftObjectProperties vars) {
-        this.vars.put("icon", null);
-        this.vars.put("size", null);
-        this.vars.put("color", null);
+        vars = properties();
     }
 
-    @Override
-    protected void subtypes(ArrayList<AloftElementSubtype> subtypes) {
-
+    public static AloftObjectProperties properties() {
+        AloftObjectProperties props = new AloftObjectProperties();
+        props.put("icon", T.instance("icon", T.string()), true);
+        props.put("size", T.instance("size", T.instance(T.number())), true);
+        props.put("color", T.instance("color", T.string()), true);
+        return props;
     }
 
 }

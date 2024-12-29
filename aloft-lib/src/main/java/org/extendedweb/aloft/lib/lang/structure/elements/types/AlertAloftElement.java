@@ -5,9 +5,9 @@ import org.extendedweb.aloft.lib.lang.structure.AloftTheme;
 import org.extendedweb.aloft.lib.lang.structure.components.AloftObjectProperties;
 import org.extendedweb.aloft.lib.lang.structure.elements.base.AloftBuilder;
 import org.extendedweb.aloft.lib.lang.structure.elements.base.AloftElement;
-import org.extendedweb.aloft.lib.lang.structure.elements.base.AloftElementSubtype;
 import org.extendedweb.aloft.lib.ModuleElement;
 import org.extendedweb.aloft.lib.html.elements.HtmlElement;
+import org.extendedweb.aloft.lib.lang.types.base.T;
 
 import java.util.ArrayList;
 
@@ -18,7 +18,7 @@ public class AlertAloftElement extends AloftElement {
     @Override
     public HtmlElement create(AloftTheme theme, ElementMapper mapper) {
         ModuleElement m = theme.getStyleModule().get(this.getClass());
-        HtmlElement root = createElement("div", m.fromKey("root"));
+        HtmlElement root = createElement("dialog", m.fromKey("root"));
         HtmlElement dialog = createElement("div", m.fromKey("dialog"));
         root.addChild(dialog);
         HtmlElement content = createElement("div", m.fromKey("content"));
@@ -37,9 +37,6 @@ public class AlertAloftElement extends AloftElement {
         builder.addRequirement("body", TextAloftElement.class, "text");
         builder.addArrayRequirement("actions", ButtonAloftElement.class);
     }
-
-    @Override
-    protected void registerSubtypes(ArrayList<AloftElementSubtype> subtypes) { }
 
     @Override
     protected String name() {
@@ -63,13 +60,9 @@ public class AlertAloftElement extends AloftElement {
 
     @Override
     protected boolean isExtensible() {
-        return true;
+        return false;
     }
 
-    @Override
-    protected boolean hasMultipleSubtypes() {
-        return true;
-    }
 
     @Override
     protected boolean acceptsChild() {
@@ -78,12 +71,14 @@ public class AlertAloftElement extends AloftElement {
 
     @Override
     protected void setupProperties(AloftObjectProperties vars) {
-
+        vars = properties();
     }
 
-    @Override
-    protected void subtypes(ArrayList<AloftElementSubtype> subtypes) {
-
+    public static AloftObjectProperties properties() {
+        AloftObjectProperties props = new AloftObjectProperties();
+        props.put("title", T.instance("title", T.string()), true);
+        props.put("message", T.instance("message", T.instance(T.string())), true);
+        return props;
     }
 
 }
